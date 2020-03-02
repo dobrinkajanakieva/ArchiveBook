@@ -68,7 +68,7 @@ namespace DAL
 
 			connection.Open();
 
-			string sql = "SELECT * FROM Sender WHERE Name='" + name + "'";
+			string sql = "SELECT * FROM Sender WHERE SenderName='" + name + "'";
 			command = new SqlCommand(sql, connection);
 			reader = command.ExecuteReader();
 
@@ -134,7 +134,7 @@ namespace DAL
 			connection.Close();
 		}
 
-		public void DeleteSenderByname(string name)
+		public void DeleteSenderByName(string name)
 		{
 			connection.Open();
 			adapter = new SqlDataAdapter();
@@ -154,7 +154,22 @@ namespace DAL
 			connection.Open();
 			adapter = new SqlDataAdapter();
 
-			string sql = "UPDATE Sender SET Name='" + sender.SenderName + "' WHERE ID_Sender=" + id;
+			string sql = "UPDATE Sender SET SenderName='" + sender.SenderName + "' WHERE ID_Sender=" + id;
+
+			command = new SqlCommand(sql, connection);
+			adapter.UpdateCommand = command;
+			adapter.UpdateCommand.ExecuteNonQuery();
+
+			command.Dispose();
+			connection.Close();
+		}
+
+		public void UpdateSenderByName(string name, Sender sender)
+		{
+			connection.Open();
+			adapter = new SqlDataAdapter();
+
+			string sql = "UPDATE Sender SET SenderName='" + sender.SenderName + "' WHERE SenderName='" + name + "'";
 
 			command = new SqlCommand(sql, connection);
 			adapter.UpdateCommand = command;
