@@ -15,7 +15,7 @@ namespace DAL
 
 		#region Functions
 
-		public List<DocumentScan> getDocuments()
+		public List<DocumentScan> GetDocuments()
 		{
 			List<DocumentScan> result = new List<DocumentScan>();
 
@@ -39,7 +39,7 @@ namespace DAL
 			return result;
 		}
 
-		public DocumentScan getDocumentByID(int id)
+		public DocumentScan GetDocumentByID(int id)
 		{
 			DocumentScan result = new DocumentScan();
 
@@ -63,7 +63,7 @@ namespace DAL
 			return result;
 		}
 
-		public List<DocumentScan> getDocumentsByArchiveBooking(int id)
+		public List<DocumentScan> GetDocumentsByArchiveBooking(int id)
 		{
 			List<DocumentScan> result = new List<DocumentScan>();
 
@@ -151,7 +151,7 @@ namespace DAL
 			connection.Close();
 		}
 
-		public void UpdateArchiveCodeByID(int id, DocumentScan document)
+		public void UpdateDocumentScanByID(int id, DocumentScan document)
 		{
 			connection.Open();
 			adapter = new SqlDataAdapter();

@@ -16,7 +16,7 @@ namespace DAL
 
 		#region Functions
 
-		public List<ArchiveCode> getArchiveCodes()
+		public List<ArchiveCode> GetArchiveCodes()
 		{
 			List<ArchiveCode> result = new List<ArchiveCode>();
 
@@ -40,7 +40,36 @@ namespace DAL
 			return result;
 		}
 
-		public ArchiveCode getArchiveCodeByID(int id)
+		public List<ArchiveCode> GetArchiveCodesByCodes(List<string> codes)
+		{
+			List<ArchiveCode> result = new List<ArchiveCode>();
+			
+			connection.Open();
+
+			StringBuilder sql = new StringBuilder("SELECT * FROM ArchiveCode WHERE Code IN (");
+			for(int i=0; i<codes.Count; i++)
+			{
+				sql.Append("'" + codes[i] + "', ");
+			}
+			string sqlCommand = sql.ToString().Substring(0, sql.ToString().Length - 2) + ")";
+			command = new SqlCommand(sqlCommand, connection);
+			reader = command.ExecuteReader();
+
+			while (reader.Read())
+			{
+				ArchiveCode code = new ArchiveCode(int.Parse(reader.GetInt32(0).ToString()), reader.GetString(1), reader.GetString(2));
+
+				result.Add(code);
+			}
+
+			reader.Close();
+			command.Dispose();
+			connection.Close();
+
+			return result;
+		}
+
+		public ArchiveCode GetArchiveCodeByID(int id)
 		{
 			ArchiveCode result = new ArchiveCode();
 
@@ -64,7 +93,7 @@ namespace DAL
 			return result;
 		}
 
-		public ArchiveCode getArchiveCodeByCode(string code)
+		public ArchiveCode GetArchiveCodeByCode(string code)
 		{
 			ArchiveCode result = new ArchiveCode();
 
@@ -145,6 +174,28 @@ namespace DAL
 			string sql = "DELETE FROM ArchiveCode WHERE Code='" + code + "'";
 
 			command = new SqlCommand(sql, connection);
+			adapter.DeleteCommand = command;
+			adapter.DeleteCommand.ExecuteNonQuery();
+
+			command.Dispose();
+			connection.Close();
+		}
+
+		public void DeleteArchiveCodesByCodes(List<string> codes)
+		{
+			connection.Open();
+			adapter = new SqlDataAdapter();
+
+			StringBuilder sql = new StringBuilder("DELETE FROM ArchiveCode WHERE Code IN (");
+
+			for (int i=0; i < codes.Count; i++) 
+			{
+				sql.Append("'" + codes[i] + "', ");
+			}
+
+			string sqlCommand = sql.ToString().Substring(0, sql.ToString().Length - 2) + ")";
+
+			command = new SqlCommand(sqlCommand, connection);
 			adapter.DeleteCommand = command;
 			adapter.DeleteCommand.ExecuteNonQuery();
 

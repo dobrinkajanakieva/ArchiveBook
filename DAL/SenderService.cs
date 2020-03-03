@@ -15,7 +15,7 @@ namespace DAL
 
 		#region Functions
 
-		public List<Sender> getSenders()
+		public List<Sender> GetSenders()
 		{
 			List<Sender> result = new List<Sender>();
 
@@ -39,7 +39,36 @@ namespace DAL
 			return result;
 		}
 
-		public Sender getSenderByID(int id)
+		public List<Sender> GetSendersByNames(List<string> names)
+		{
+			List<Sender> result = new List<Sender>();
+
+			connection.Open();
+
+			StringBuilder sql = new StringBuilder("SELECT * FROM Sender WHERE SenderName IN (");
+			for (int i = 0; i < names.Count; i++)
+			{
+				sql.Append("'" + names[i] + "', ");
+			}
+			string sqlCommand = sql.ToString().Substring(0, sql.ToString().Length - 2) + ")";
+			command = new SqlCommand(sqlCommand, connection);
+			reader = command.ExecuteReader();
+
+			while (reader.Read())
+			{
+				Sender sender = new Sender(int.Parse(reader.GetInt32(0).ToString()), reader.GetString(1));
+
+				result.Add(sender);
+			}
+
+			reader.Close();
+			command.Dispose();
+			connection.Close();
+
+			return result;
+		}
+
+		public Sender GetSenderByID(int id)
 		{
 			Sender result = new Sender();
 
@@ -62,7 +91,7 @@ namespace DAL
 			return result;
 		}
 
-		public Sender getSenderByName(string name)
+		public Sender GetSenderByName(string name)
 		{
 			Sender result = new Sender();
 
@@ -142,6 +171,28 @@ namespace DAL
 			string sql = "DELETE FROM Sender WHERE SenderName='" + name + "'";
 
 			command = new SqlCommand(sql, connection);
+			adapter.DeleteCommand = command;
+			adapter.DeleteCommand.ExecuteNonQuery();
+
+			command.Dispose();
+			connection.Close();
+		}
+
+		public void DeleteSendersByNames(List<string> names)
+		{
+			connection.Open();
+			adapter = new SqlDataAdapter();
+
+			StringBuilder sql = new StringBuilder("DELETE FROM Sender WHERE SenderName IN (");
+
+			for (int i = 0; i < names.Count; i++)
+			{
+				sql.Append("'" + names[i] + "', ");
+			}
+
+			string sqlCommand = sql.ToString().Substring(0, sql.ToString().Length - 2) + ")";
+
+			command = new SqlCommand(sqlCommand, connection);
 			adapter.DeleteCommand = command;
 			adapter.DeleteCommand.ExecuteNonQuery();
 

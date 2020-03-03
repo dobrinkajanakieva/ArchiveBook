@@ -10,103 +10,137 @@ namespace DALTests
 	public class DocumentScanTest
 	{
         [Fact]
-        public void Test1() //IsValidGetArchiveCodeByID1()
+        public void Test1()
         {
             //Arrange
-            var archiveCodeService = new ArchiveCodeService();
-            const string Code = "01";
-            const string Name = "Основање, организација и развој";
+            var documentScanService = new DocumentScanService();
+            const int ID_ArchiveBooking = 30;
+            const string DocumentPath = "htrgtd";
 
             //Act
-            ArchiveCode code = archiveCodeService.getArchiveCodeByID(1);
+            DocumentScan document = documentScanService.GetDocumentByID(2);
             bool isValid = true;
-            if (Code != code.Code || Name != code.Name)
+            if (ID_ArchiveBooking != document.ID_ArchiveBooking || DocumentPath != document.DocumentPath)
                 isValid = false;
 
             //Assert
-            Assert.True(isValid, "The Archive Code with ID=1 is not valid");
+            Assert.True(isValid, "The Document with ID=2 is not valid");
         }
 
         [Fact]
-        public void Test2() //IsValidGetArchiveCodeByCode1()
+        public void Test2()
         {
             //Arrange
-            var archiveCodeService = new ArchiveCodeService();
-            const string Code = "01";
-            const string Name = "Основање, организација и развој";
+            var documentScanService = new DocumentScanService();
 
             //Act
-            ArchiveCode code = archiveCodeService.getArchiveCodeByCode(Code);
+            List<DocumentScan> documents = documentScanService.GetDocumentsByArchiveBooking(30);
             bool isValid = true;
-            if (Code != code.Code || Name != code.Name)
-                isValid = false;
+            foreach (DocumentScan document in documents)
+            {
+                if (30 != document.ID_ArchiveBooking)
+                    isValid = false;
+            }
 
             //Assert
-            Assert.True(isValid, "The Archive Code with Code=01 is not valid");
+            Assert.True(isValid, "The Document with Archive Booking ID=30 is not valid");
         }
 
         [Fact]
-        public void Test3() //IsValidInsertArchiveCodeByCode()
+        public void Test3()
         {
             //Arrange
-            var archiveCodeService = new ArchiveCodeService();
-            const string Code = "09";
-            const string Name = "test9";
+            var documentScanService = new DocumentScanService();
+            const int ID_ArchiveBooking = 30;
+            const string DocumentPath = "novo";
 
             //Act
-            ArchiveCode code = new ArchiveCode(100, Code, Name);
-            archiveCodeService.InsertArchiveCode(code);
-            code = archiveCodeService.getArchiveCodeByCode(Code);
+            DocumentScan document = new DocumentScan(100, ID_ArchiveBooking, DocumentPath);
+            documentScanService.InsertDocument(document);
+            document = documentScanService.GetDocumentByID(4);
             bool isValid = true;
-            if (Code != code.Code || Name != code.Name)
+            if (DocumentPath != document.DocumentPath)
                 isValid = false;
 
             //Assert
-            Assert.True(isValid, "The Archive Code with Code=09 is not valid");
+            Assert.True(isValid, "The Document with ID=4 is not valid");
         }
 
         [Fact]
-        public void Test4() //IsValidUpdateArchiveCodeByCode()
+        public void Test4()
         {
             //Arrange
-            var archiveCodeService = new ArchiveCodeService();
-            const string Code = "09";
-            const string Name = "updated";
+            var documentScanService = new DocumentScanService();
+            const int ID_ArchiveBooking = 30;
+            const string DocumentPath = "novo";
 
             //Act
-            ArchiveCode code = new ArchiveCode(100, Code, Name);
-            archiveCodeService.UpdateArchiveCodeByCode(Code, code);
-            code = archiveCodeService.getArchiveCodeByCode(Code);
+            DocumentScan document = new DocumentScan(100, ID_ArchiveBooking, DocumentPath);
+            documentScanService.UpdateDocumentScanByID(3, document);
+            document = documentScanService.GetDocumentByID(3);
             bool isValid = true;
-            if (code.Code != Code || code.Name != Name)
+            if (DocumentPath != document.DocumentPath)
                 isValid = false;
 
-            archiveCodeService.DeleteArchiveCodeByCode(Code);
             //Assert
-            Assert.True(isValid, "The Archive Code with Code=09 is not valid");
+            Assert.True(isValid, "The Document with Path=novo is not valid");
         }
 
         [Fact]
-        public void Test5() //IsValidDeleteArchiveCodeByCode()
+        public void Test5()
         {
             //Arrange
-            var archiveCodeService = new ArchiveCodeService();
-            const string Code = "09";
-            const string Name = "test9";
+            var documentScanService = new DocumentScanService();
 
             //Act
-            ArchiveCode code = new ArchiveCode(100, Code, Name);
-            archiveCodeService.UpdateArchiveCodeByCode(Code, code);
-            archiveCodeService.DeleteArchiveCodeByCode(Code);
-            code = archiveCodeService.getArchiveCodeByCode(Code);
+            documentScanService.DeleteDocumentById(3);
+            DocumentScan document = documentScanService.GetDocumentByID(3);
             bool isValid = true;
-            if (code.Code != null || code.Name != null)
-                isValid = false;
-            if (code.Code == Code || code.Name == Name)
+            if (document.DocumentPath != null)
                 isValid = false;
 
             //Assert
-            Assert.True(isValid, "The Archive Code with Code=09 is not valid");
+            Assert.True(isValid, "The Sender with Name=test9 is not valid");
+        }
+
+        [Fact]
+        public void Test6()
+        {
+            //Arrange
+            var documentScanService = new DocumentScanService();
+            const int ID_ArchiveBooking1 = 30;
+            const string DocumentPath1 = "novo"; 
+            const int ID_ArchiveBooking2 = 30;
+            const string DocumentPath2 = "novo"; 
+            const int ID_ArchiveBooking3 = 30;
+            const string DocumentPath3 = "novo";
+            List<DocumentScan> documents = new List<DocumentScan>();
+            List<DocumentScan> result = new List<DocumentScan>();
+
+            //Act
+            DocumentScan document1 = new DocumentScan(100, ID_ArchiveBooking1, DocumentPath1);
+            DocumentScan document2 = new DocumentScan(101, ID_ArchiveBooking2, DocumentPath2);
+            DocumentScan document3 = new DocumentScan(102, ID_ArchiveBooking3, DocumentPath3);
+
+            documents.Add(document1);
+            documents.Add(document2);
+            documents.Add(document3);
+
+            documentScanService.InsertDocuments(documents);
+
+            result = documentScanService.GetDocumentsByArchiveBooking(30);
+
+            bool isValid = true;
+            foreach (DocumentScan document in result)
+            {
+                if (document.DocumentPath != DocumentPath3)
+                    isValid = false;
+            }
+
+            documentScanService.DeleteDocumentByArchiveBooking(30);
+
+            //Assert
+            Assert.True(isValid, "Not valid");
         }
     }
 }

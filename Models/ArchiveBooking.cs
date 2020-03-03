@@ -11,7 +11,7 @@ namespace Models
         public ArchiveBooking(int id, int id_ArchiveCode, string docNumber, DateTime date, int year, string subject, int id_Sender, string entryCode) 
         {
             ID_ArchiveBooking = id;
-            ID_ArchiveBooking = id_ArchiveCode;
+            ID_ArchiveCode = id_ArchiveCode;
             DocumentNumber = docNumber;
             Date = date;
             Year = year;

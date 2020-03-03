@@ -15,7 +15,7 @@ namespace DAL
 
 		#region Functions
 
-		public List<ArchiveBooking> getArchiveBookings()
+		public List<ArchiveBooking> GetArchiveBookings()
 		{
 			List<ArchiveBooking> result = new List<ArchiveBooking>();
 
@@ -48,7 +48,7 @@ namespace DAL
 			return result;
 		}
 
-		public ArchiveBooking getArchiveBookingByID(int id)
+		public ArchiveBooking GetArchiveBookingByID(int id)
 		{
 			ArchiveBooking booking = new ArchiveBooking();
 
@@ -63,7 +63,7 @@ namespace DAL
 				booking.ID_ArchiveBooking = int.Parse(reader.GetInt32(0).ToString());
 				booking.ID_ArchiveCode = int.Parse(reader.GetInt32(1).ToString());
 				booking.DocumentNumber = reader.GetString(2);
-				booking.Date = reader.GetDateTime(3);
+				booking.Date = reader.GetDateTime(3).Date;
 				booking.Year = int.Parse(reader.GetInt32(4).ToString());
 				booking.Subject = reader.GetString(5);
 				booking.ID_Sender = int.Parse(reader.GetInt32(6).ToString());
@@ -77,7 +77,7 @@ namespace DAL
 			return booking;
 		}
 
-		public ArchiveBooking getArchiveBookingByDocumentNumber(string number)
+		public ArchiveBooking GetArchiveBookingByDocumentNumber(string number)
 		{
 			ArchiveBooking booking = new ArchiveBooking();
 
@@ -92,7 +92,7 @@ namespace DAL
 				booking.ID_ArchiveBooking = int.Parse(reader.GetInt32(0).ToString());
 				booking.ID_ArchiveCode = int.Parse(reader.GetInt32(1).ToString());
 				booking.DocumentNumber = reader.GetString(2);
-				booking.Date = reader.GetDateTime(3);
+				booking.Date = reader.GetDateTime(3).Date;
 				booking.Year = int.Parse(reader.GetInt32(4).ToString());
 				booking.Subject = reader.GetString(5);
 				booking.ID_Sender = int.Parse(reader.GetInt32(6).ToString());
@@ -106,7 +106,36 @@ namespace DAL
 			return booking;
 		}
 
-		public List<ArchiveBooking> getArchiveBookingsByDate(DateTime date)
+		public ArchiveBooking GetArchiveBookingByEntryCode(string entryCode)
+		{
+			ArchiveBooking booking = new ArchiveBooking();
+
+			connection.Open();
+
+			string sql = "SELECT * FROM ArchiveBooking WHERE EntryCode='" + entryCode + "'";
+			command = new SqlCommand(sql, connection);
+			reader = command.ExecuteReader();
+
+			while (reader.Read())
+			{
+				booking.ID_ArchiveBooking = int.Parse(reader.GetInt32(0).ToString());
+				booking.ID_ArchiveCode = int.Parse(reader.GetInt32(1).ToString());
+				booking.DocumentNumber = reader.GetString(2);
+				booking.Date = reader.GetDateTime(3).Date;
+				booking.Year = int.Parse(reader.GetInt32(4).ToString());
+				booking.Subject = reader.GetString(5);
+				booking.ID_Sender = int.Parse(reader.GetInt32(6).ToString());
+				booking.EntryCode = reader.GetString(7);
+			}
+
+			reader.Close();
+			command.Dispose();
+			connection.Close();
+
+			return booking;
+		}
+
+		public List<ArchiveBooking> GetArchiveBookingsByDate(DateTime date)
 		{
 			List<ArchiveBooking> result = new List<ArchiveBooking>();
 
@@ -123,7 +152,7 @@ namespace DAL
 				booking.ID_ArchiveBooking = int.Parse(reader.GetInt32(0).ToString());
 				booking.ID_ArchiveCode = int.Parse(reader.GetInt32(1).ToString());
 				booking.DocumentNumber = reader.GetString(2);
-				booking.Date = reader.GetDateTime(3);
+				booking.Date = reader.GetDateTime(3).Date;
 				booking.Year = int.Parse(reader.GetInt32(4).ToString());
 				booking.Subject = reader.GetString(5);
 				booking.ID_Sender = int.Parse(reader.GetInt32(6).ToString());
@@ -139,7 +168,7 @@ namespace DAL
 			return result;
 		}
 
-		public List<ArchiveBooking> getArchiveBookingsByYear(int year)
+		public List<ArchiveBooking> GetArchiveBookingsByYear(int year)
 		{
 			List<ArchiveBooking> result = new List<ArchiveBooking>();
 
@@ -156,7 +185,7 @@ namespace DAL
 				booking.ID_ArchiveBooking = int.Parse(reader.GetInt32(0).ToString());
 				booking.ID_ArchiveCode = int.Parse(reader.GetInt32(1).ToString());
 				booking.DocumentNumber = reader.GetString(2);
-				booking.Date = reader.GetDateTime(3);
+				booking.Date = reader.GetDateTime(3).Date;
 				booking.Year = int.Parse(reader.GetInt32(4).ToString());
 				booking.Subject = reader.GetString(5);
 				booking.ID_Sender = int.Parse(reader.GetInt32(6).ToString());
@@ -172,7 +201,7 @@ namespace DAL
 			return result;
 		}
 
-		public List<ArchiveBooking> getArchiveBookingsBySubject(string subject)
+		public List<ArchiveBooking> GetArchiveBookingsBySubject(string subject)
 		{
 			List<ArchiveBooking> result = new List<ArchiveBooking>();
 
@@ -189,7 +218,7 @@ namespace DAL
 				booking.ID_ArchiveBooking = int.Parse(reader.GetInt32(0).ToString());
 				booking.ID_ArchiveCode = int.Parse(reader.GetInt32(1).ToString());
 				booking.DocumentNumber = reader.GetString(2);
-				booking.Date = reader.GetDateTime(3);
+				booking.Date = reader.GetDateTime(3).Date;
 				booking.Year = int.Parse(reader.GetInt32(4).ToString());
 				booking.Subject = reader.GetString(5);
 				booking.ID_Sender = int.Parse(reader.GetInt32(6).ToString());
@@ -205,9 +234,88 @@ namespace DAL
 			return result;
 		}
 
-		//public List<ArchiveBooking> getArchiveBookingsByArchiveCode(string subject)
+		public List<ArchiveBooking> GetArchiveBookingsByArchiveCode(string code)
+		{
+			List<ArchiveBooking> result = new List<ArchiveBooking>();
 
-		//public List<ArchiveBooking> getArchiveBookingsBySender(string subject)
+			connection.Open();
+
+			string sql = "SELECT ID_ArchiveCode FROM ArchiveCode WHERE Code='" + code + "'";
+
+			command = new SqlCommand(sql, connection);
+			reader = command.ExecuteReader();
+			int id = 0;
+			if(reader.Read())
+				id = reader.GetInt32(0);
+
+			sql = "SELECT * FROM ArchiveBooking WHERE ID_ArchiveCode=" + id;
+			command = new SqlCommand(sql, connection);
+			reader = command.ExecuteReader();
+
+			while (reader.Read())
+			{
+				ArchiveBooking booking = new ArchiveBooking();
+
+				booking.ID_ArchiveBooking = int.Parse(reader.GetInt32(0).ToString());
+				booking.ID_ArchiveCode = int.Parse(reader.GetInt32(1).ToString());
+				booking.DocumentNumber = reader.GetString(2);
+				booking.Date = reader.GetDateTime(3).Date;
+				booking.Year = int.Parse(reader.GetInt32(4).ToString());
+				booking.Subject = reader.GetString(5);
+				booking.ID_Sender = int.Parse(reader.GetInt32(6).ToString());
+				booking.EntryCode = reader.GetString(7);
+
+				result.Add(booking);
+			}
+
+			reader.Close();
+			command.Dispose();
+			connection.Close();
+
+			return result;
+		}
+
+		public List<ArchiveBooking> GetArchiveBookingsBySender(string sender)
+		{
+			List<ArchiveBooking> result = new List<ArchiveBooking>();
+
+			connection.Open();
+
+			string sql = "SELECT ID_Sender FROM Sender WHERE SenderName='" + sender + "'";
+
+			command = new SqlCommand(sql, connection);
+			reader = command.ExecuteReader();
+
+			int id = 0;
+			if (reader.Read())
+				id = reader.GetInt32(0);
+
+			sql = "SELECT * FROM ArchiveBooking WHERE ID_Sender=" + id;
+			command = new SqlCommand(sql, connection);
+			reader = command.ExecuteReader();
+
+			while (reader.Read())
+			{
+				ArchiveBooking booking = new ArchiveBooking();
+
+				booking.ID_ArchiveBooking = int.Parse(reader.GetInt32(0).ToString());
+				booking.ID_ArchiveCode = int.Parse(reader.GetInt32(1).ToString());
+				booking.DocumentNumber = reader.GetString(2);
+				booking.Date = reader.GetDateTime(3).Date;
+				booking.Year = int.Parse(reader.GetInt32(4).ToString());
+				booking.Subject = reader.GetString(5);
+				booking.ID_Sender = int.Parse(reader.GetInt32(6).ToString());
+				booking.EntryCode = reader.GetString(7);
+
+				result.Add(booking);
+			}
+
+			reader.Close();
+			command.Dispose();
+			connection.Close();
+
+			return result;
+		}
 
 		public void InsertArchiveBooking(ArchiveBooking booking)
 		{
@@ -227,23 +335,11 @@ namespace DAL
 
 		public void InsertArchiveBookings(List<ArchiveBooking> bookings)
 		{
-			connection.Open();
-			adapter = new SqlDataAdapter();
-
-			StringBuilder sql = new StringBuilder("INSERT INTO ArchiveBooking(ID_ArchiveCode, DocumentNumber, Date, Year, Subject, ID_Sender, EntryCode) VALUES");
 
 			foreach (ArchiveBooking booking in bookings)
 			{
-				sql.Append("('" + booking.ID_ArchiveCode + ", '" + booking.DocumentNumber + "', '" + booking.Date.Date + "', " + booking.Year
-				+ ", '" + booking.Subject + "', " + booking.ID_Sender + ", '" + booking.EntryCode + "'),");
+				InsertArchiveBooking(booking);
 			}
-
-			command = new SqlCommand(sql.ToString().Substring(0, sql.ToString().Length - 1), connection);
-			adapter.InsertCommand = command;
-			adapter.InsertCommand.ExecuteNonQuery();
-
-			command.Dispose();
-			connection.Close();
 		}
 
 		public void DeleteArchiveBookingById(int id)
@@ -373,7 +469,7 @@ namespace DAL
 
 			string sql = "UPDATE ArchiveBooking SET ID_ArchiveCode=" + booking.ID_ArchiveCode + ", DocumentNumber='" 
 				+ booking.DocumentNumber + "', Date='" + booking.Date.Date + "', Year=" + booking.Year + ", Subject='" + booking.Subject 
-				+ "', ID_Sender=" + booking.ID_Sender + "', EntryCode='" + booking.EntryCode + "' WHERE ID_ArchiveBooking=" + id;
+				+ "', ID_Sender=" + booking.ID_Sender + ", EntryCode='" + booking.EntryCode + "' WHERE ID_ArchiveBooking=" + id;
 
 			command = new SqlCommand(sql, connection);
 			adapter.UpdateCommand = command;
