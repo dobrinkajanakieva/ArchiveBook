@@ -7,16 +7,14 @@ using System.Text;
 
 namespace DAL
 {
-	public class ArchiveBookingEngine
+	public class ArchiveBookingEngine : DBConnection
 	{
-		public ArchiveBookingEngine()
-		{
-			connection = new SqlConnection(connectionString);
-		}
+		public ArchiveBookingEngine//(string connectionString)
+			: base() { }  // (connectionString) { }
 
-		#region Functions
+	#region Functions
 
-		public List<ArchiveBooking> GetArchiveBookings()
+	public List<ArchiveBooking> GetArchiveBookings()
 		{
 			List<ArchiveBooking> result = new List<ArchiveBooking>();
 
@@ -394,9 +392,10 @@ namespace DAL
 			connection.Open();
 			adapter = new SqlDataAdapter();
 
-			string sql = "DELETE FROM ArchiveBooking WHERE Year= :year" + year;
+			string sql = "DELETE FROM ArchiveBooking WHERE Year = @year";
 
 			command = new SqlCommand(sql, connection);
+			command.Parameters.AddWithValue("@year", year);
 			adapter.DeleteCommand = command;
 			adapter.DeleteCommand.ExecuteNonQuery();
 
@@ -484,12 +483,7 @@ namespace DAL
 		#endregion
 
 		#region Properties
-		public string connectionString = "Server=(localdb)\\mssqllocaldb;Database=Archive;Trusted_Connection=True;MultipleActiveResultSets=true";
-
-		public SqlConnection connection { get; set; }
-		public SqlCommand command { get; set; }
-		public SqlDataReader reader { get; set; }
-		public SqlDataAdapter adapter { get; set; }
+		
 
 		#endregion
 	}

@@ -18,12 +18,10 @@ namespace DALTests
 
             //Act
             ArchiveCode code = archiveCodeEngine.GetArchiveCodeByID(1);
-            bool isValid = true;
-            if (Code != code.Code || Name != code.Name)
-                isValid = false;
 
             //Assert
-            Assert.True(isValid, "The Archive Code with ID=1 is not valid");
+            Assert.Equal(Code, code.Code);
+            Assert.Equal(Name, code.Name);
         }
 
         [Fact]
@@ -36,12 +34,10 @@ namespace DALTests
 
             //Act
             ArchiveCode code = archiveCodeEngine.GetArchiveCodeByCode(Code);
-            bool isValid = true;
-            if (Code != code.Code || Name != code.Name)
-                isValid = false;
 
             //Assert
-            Assert.True(isValid, "The Archive Code with Code=01 is not valid");
+            Assert.Equal(1, code.ID_ArchiveCode);
+            Assert.Equal(Name, code.Name);
         }
 
         [Fact]
@@ -56,12 +52,10 @@ namespace DALTests
             ArchiveCode code = new ArchiveCode(100, Code, Name);
             archiveCodeEngine.InsertArchiveCode(code);
             code = archiveCodeEngine.GetArchiveCodeByCode(Code);
-            bool isValid = true;
-            if (Code != code.Code || Name != code.Name)
-                isValid = false;
 
             //Assert
-            Assert.True(isValid, "The Archive Code with Code=09 is not valid");
+            Assert.Equal(Code, code.Code);
+            Assert.Equal(Name, code.Name);
         }
 
         [Fact]
@@ -69,20 +63,17 @@ namespace DALTests
         {
             //Arrange
             var archiveCodeEngine = new ArchiveCodeEngine();
-            const string Code = "09";
+            const string Code = "458";
             const string Name = "updated";
 
             //Act
             ArchiveCode code = new ArchiveCode(100, Code, Name);
-            archiveCodeEngine.UpdateArchiveCodeByCode(Code, code);
+            archiveCodeEngine.UpdateArchiveCodeByCode("456", code);
             code = archiveCodeEngine.GetArchiveCodeByCode(Code);
-            bool isValid = true;
-            if (code.Code != Code || code.Name != Name)
-                isValid = false;
 
-            archiveCodeEngine.DeleteArchiveCodeByCode(Code);
             //Assert
-            Assert.True(isValid, "The Archive Code with Code=09 is not valid");
+            Assert.Equal(Code, code.Code);
+            Assert.Equal(Name, code.Name);
         }
 
         [Fact]
@@ -90,26 +81,19 @@ namespace DALTests
         {
             //Arrange
             var archiveCodeEngine = new ArchiveCodeEngine();
-            const string Code = "09";
-            const string Name = "test9";
+            const string Code = "7564";
 
             //Act
-            ArchiveCode code = new ArchiveCode(100, Code, Name);
-            archiveCodeEngine.InsertArchiveCode(code);
             archiveCodeEngine.DeleteArchiveCodeByCode(Code);
-            code = archiveCodeEngine.GetArchiveCodeByCode(Code);
-            bool isValid = true;
-            if (code.Code != null || code.Name != null)
-                isValid = false;
-            if (code.Code == Code || code.Name == Name)
-                isValid = false;
+            ArchiveCode code = archiveCodeEngine.GetArchiveCodeByCode(Code);
 
             //Assert
-            Assert.True(isValid, "The Archive Code with Code=09 is not valid");
+            Assert.Null(code.Code);
+            Assert.Null(code.Name);
         }
 
         [Fact]
-        public void InsertDeleteArchiveCodes() 
+        public void InsertArchiveCodes() 
         {
             //Arrange
             var archiveCodeEngine = new ArchiveCodeEngine();
@@ -140,17 +124,40 @@ namespace DALTests
 
             result = archiveCodeEngine.GetArchiveCodesByCodes(codes);
 
-            bool isValid = true;
-            foreach(ArchiveCode code in result)
+            //Assert
+            foreach (ArchiveCode code in result)
             {
-                if(!codes.Contains(code.Code))
-                    isValid = false;
+                Assert.Contains(code.Code, codes);
             }
+        }
+
+        [Fact]
+        public void DeleteArchiveCodes()
+        {
+            //Arrange
+            var archiveCodeEngine = new ArchiveCodeEngine();
+            const string Code1 = "09";
+            const string Code2 = "0901";
+            const string Code3 = "0902";
+            List<ArchiveCode> result = new List<ArchiveCode>();
+            List<string> codes = new List<string>();
+
+            //Act
+
+
+            codes.Add(Code1);
+            codes.Add(Code2);
+            codes.Add(Code3);
 
             archiveCodeEngine.DeleteArchiveCodesByCodes(codes);
 
+            result = archiveCodeEngine.GetArchiveCodesByCodes(codes);
+
             //Assert
-            Assert.True(isValid, "Not valid");
+            foreach (ArchiveCode code in result)
+            {
+                Assert.Null(code.Code);
+            }
         }
     }
 }

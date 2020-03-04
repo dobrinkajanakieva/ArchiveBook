@@ -7,16 +7,14 @@ using System.Text;
 
 namespace DAL
 {
-	public class DocumentScanEngine
+	public class DocumentScanEngine : DBConnection
 	{
-		public DocumentScanEngine()
-		{
-			connection = new SqlConnection(connectionString);
-		}
+		public DocumentScanEngine//(string connectionString)
+			: base() { }  // (connectionString) { }
 
-		#region Functions
+	#region Functions
 
-		public List<DocumentScan> GetDocuments()
+	public List<DocumentScan> GetDocuments()
 		{
 			List<DocumentScan> result = new List<DocumentScan>();
 

@@ -8,12 +8,10 @@ using System.Text;
 
 namespace DAL
 {
-	public class ArchiveCodeEngine
+	public class ArchiveCodeEngine : DBConnection
 	{
-		public ArchiveCodeEngine() 
-		{
-			connection = new SqlConnection(connectionString);
-		}
+		public ArchiveCodeEngine()  //(string connectionString)
+			: base() { }  // (connectionString) { }
 
 		#region Functions
 

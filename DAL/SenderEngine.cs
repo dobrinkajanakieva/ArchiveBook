@@ -7,16 +7,14 @@ using System.Text;
 
 namespace DAL
 {
-	public class SenderEngine
+	public class SenderEngine : DBConnection
 	{
-		public SenderEngine()
-		{
-			connection = new SqlConnection(connectionString);
-		}
+		public SenderEngine//(string connectionString)
+			: base() { }  // (connectionString) { }
 
-		#region Functions
+	#region Functions
 
-		public List<Sender> GetSenders()
+	public List<Sender> GetSenders()
 		{
 			List<Sender> result = new List<Sender>();
 
@@ -70,7 +68,7 @@ namespace DAL
 
 			connection.Open();
 
-			string sql = "SELECT * FROM Sender WHERE SenderName = :@name";
+			string sql = "SELECT * FROM Sender WHERE SenderName = @name";
 			command = new SqlCommand(sql, connection);
 			command.Parameters.AddWithValue("@name", name);
 			reader = command.ExecuteReader();
@@ -189,12 +187,7 @@ namespace DAL
 		#endregion
 
 		#region Properties
-		public string connectionString = "Server=(localdb)\\mssqllocaldb;Database=Archive;Trusted_Connection=True;MultipleActiveResultSets=true";
-
-		public SqlConnection connection { get; set; }
-		public SqlCommand command { get; set; }
-		public SqlDataReader reader { get; set; }
-		public SqlDataAdapter adapter { get; set; }
+		
 
 		#endregion
 	}

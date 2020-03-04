@@ -14,17 +14,13 @@ namespace DALTests
         {
             //Arrange
             var documentScanEngine = new DocumentScanEngine();
-            const int ID_ArchiveBooking = 30;
-            const string DocumentPath = "htrgtd";
 
             //Act
-            DocumentScan document = documentScanEngine.GetDocumentByID(2);
-            bool isValid = true;
-            if (ID_ArchiveBooking != document.ID_ArchiveBooking || DocumentPath != document.DocumentPath)
-                isValid = false;
+            DocumentScan document = documentScanEngine.GetDocumentByID(17);
 
             //Assert
-            Assert.True(isValid, "The Document with ID=2 is not valid");
+            Assert.Equal(70, document.ID_ArchiveBooking);
+            Assert.Equal("novo", document.DocumentPath);
         }
 
         [Fact]
@@ -34,16 +30,13 @@ namespace DALTests
             var documentScanEngine = new DocumentScanEngine();
 
             //Act
-            List<DocumentScan> documents = documentScanEngine.GetDocumentsByArchiveBooking(30);
-            bool isValid = true;
+            List<DocumentScan> documents = documentScanEngine.GetDocumentsByArchiveBooking(69);
+            
+            //Assert
             foreach (DocumentScan document in documents)
             {
-                if (30 != document.ID_ArchiveBooking)
-                    isValid = false;
+                Assert.Equal(69, document.ID_ArchiveBooking);
             }
-
-            //Assert
-            Assert.True(isValid, "The Document with Archive Booking ID=30 is not valid");
         }
 
         [Fact]
@@ -51,39 +44,34 @@ namespace DALTests
         {
             //Arrange
             var documentScanEngine = new DocumentScanEngine();
-            const int ID_ArchiveBooking = 30;
+            const int ID_ArchiveBooking = 70;
             const string DocumentPath = "novo";
 
             //Act
             DocumentScan document = new DocumentScan(100, ID_ArchiveBooking, DocumentPath);
             documentScanEngine.InsertDocument(document);
-            document = documentScanEngine.GetDocumentByID(4);
-            bool isValid = true;
-            if (DocumentPath != document.DocumentPath)
-                isValid = false;
+            List<DocumentScan> documents = documentScanEngine.GetDocumentsByArchiveBooking(70);
 
             //Assert
-            Assert.True(isValid, "The Document with ID=4 is not valid");
+            foreach(DocumentScan doc in documents)
+                Assert.Equal(DocumentPath, doc.DocumentPath);
         }
 
         [Fact]
-        public void UpdateDocumentScanByID()
+        public void UpdateDocumentByID()
         {
             //Arrange
             var documentScanEngine = new DocumentScanEngine();
-            const int ID_ArchiveBooking = 30;
-            const string DocumentPath = "novo";
+            const int ID_ArchiveBooking = 70;
+            const string DocumentPath = "updated";
 
             //Act
             DocumentScan document = new DocumentScan(100, ID_ArchiveBooking, DocumentPath);
-            documentScanEngine.UpdateDocumentScanByID(3, document);
-            document = documentScanEngine.GetDocumentByID(3);
-            bool isValid = true;
-            if (DocumentPath != document.DocumentPath)
-                isValid = false;
+            documentScanEngine.UpdateDocumentScanByID(24, document);
+            document = documentScanEngine.GetDocumentByID(24);
 
             //Assert
-            Assert.True(isValid, "The Document with Path=novo is not valid");
+            Assert.Equal(DocumentPath, document.DocumentPath);
         }
 
         [Fact]
@@ -93,14 +81,11 @@ namespace DALTests
             var documentScanEngine = new DocumentScanEngine();
 
             //Act
-            documentScanEngine.DeleteDocumentById(3);
-            DocumentScan document = documentScanEngine.GetDocumentByID(3);
-            bool isValid = true;
-            if (document.DocumentPath != null)
-                isValid = false;
+            documentScanEngine.DeleteDocumentById(12);
+            DocumentScan document = documentScanEngine.GetDocumentByID(12);
 
             //Assert
-            Assert.True(isValid, "The Sender with Name=test9 is not valid");
+            Assert.Null(document.DocumentPath);
         }
 
         [Fact]
@@ -110,14 +95,11 @@ namespace DALTests
             var documentScanEngine = new DocumentScanEngine();
 
             //Act
-            documentScanEngine.DeleteDocumentByArchiveBooking(3);
-            DocumentScan document = documentScanEngine.GetDocumentByID(3);
-            bool isValid = true;
-            if (document.DocumentPath != null)
-                isValid = false;
+            documentScanEngine.DeleteDocumentByArchiveBooking(69);
+            DocumentScan document = documentScanEngine.GetDocumentByID(11);
 
             //Assert
-            Assert.True(isValid, "The Sender with Name=test9 is not valid");
+            Assert.Null(document.DocumentPath);
         }
 
         [Fact]
@@ -125,11 +107,11 @@ namespace DALTests
         {
             //Arrange
             var documentScanEngine = new DocumentScanEngine();
-            const int ID_ArchiveBooking1 = 30;
+            const int ID_ArchiveBooking1 = 72;
             const string DocumentPath1 = "novo"; 
-            const int ID_ArchiveBooking2 = 30;
+            const int ID_ArchiveBooking2 = 70;
             const string DocumentPath2 = "novo"; 
-            const int ID_ArchiveBooking3 = 30;
+            const int ID_ArchiveBooking3 = 72;
             const string DocumentPath3 = "novo";
             List<DocumentScan> documents = new List<DocumentScan>();
             List<DocumentScan> result = new List<DocumentScan>();
@@ -145,19 +127,13 @@ namespace DALTests
 
             documentScanEngine.InsertDocuments(documents);
 
-            result = documentScanEngine.GetDocumentsByArchiveBooking(30);
-
-            bool isValid = true;
-            foreach (DocumentScan document in result)
-            {
-                if (document.DocumentPath != DocumentPath3)
-                    isValid = false;
-            }
-
-            documentScanEngine.DeleteDocumentByArchiveBooking(30);
+            result = documentScanEngine.GetDocumentsByArchiveBooking(70);
 
             //Assert
-            Assert.True(isValid, "Not valid");
+            foreach (DocumentScan document in result)
+            {
+                Assert.Equal("novo", document.DocumentPath);
+            }
         }
     }
 }
