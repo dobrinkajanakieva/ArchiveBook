@@ -1,20 +1,18 @@
 ﻿using Models;
-using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Text;
 
 namespace DAL
 {
 	public class SenderEngine : DBConnection
 	{
-		public SenderEngine//(string connectionString)
+		public SenderEngine() //(string connectionString)
 			: base() { }  // (connectionString) { }
 
-	#region Functions
+		#region Functions
 
-	public List<Sender> GetSenders()
+		public List<Sender> GetSenders()
 		{
 			List<Sender> result = new List<Sender>();
 
@@ -144,7 +142,7 @@ namespace DAL
 
 		public void DeleteSendersByNames(List<string> names)
 		{
-			foreach(string name in names)
+			foreach (string name in names)
 			{
 				DeleteSenderByName(name);
 			}
@@ -187,7 +185,7 @@ namespace DAL
 		#endregion
 
 		#region Properties
-		
+
 
 		#endregion
 	}

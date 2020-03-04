@@ -3,18 +3,17 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Text;
 
 namespace DAL
 {
 	public class ArchiveBookingEngine : DBConnection
 	{
-		public ArchiveBookingEngine//(string connectionString)
+		public ArchiveBookingEngine() //(string connectionString)
 			: base() { }  // (connectionString) { }
 
-	#region Functions
+		#region Functions
 
-	public List<ArchiveBooking> GetArchiveBookings()
+		public List<ArchiveBooking> GetArchiveBookings()
 		{
 			List<ArchiveBooking> result = new List<ArchiveBooking>();
 
@@ -245,7 +244,7 @@ namespace DAL
 			command = new SqlCommand(sql, connection);
 			reader = command.ExecuteReader();
 			int id = 0;
-			if(reader.Read())
+			if (reader.Read())
 				id = reader.GetInt32(0);
 
 			sql = "SELECT * FROM ArchiveBooking WHERE ID_ArchiveCode=" + id;
@@ -322,9 +321,9 @@ namespace DAL
 			connection.Open();
 			adapter = new SqlDataAdapter();
 
-			string sql = "INSERT INTO ArchiveBooking(ID_ArchiveCode, DocumentNumber, Date, Year, Subject, ID_Sender, EntryCode) VALUES(" 
-				+ booking.ID_ArchiveCode + ", '" + booking.DocumentNumber + "', '" + booking.Date.Date + "', " + booking.Year 
-				+ ", '" + booking.Subject + "', " + booking.ID_Sender + ", '" + booking.EntryCode+ "')";
+			string sql = "INSERT INTO ArchiveBooking(ID_ArchiveCode, DocumentNumber, Date, Year, Subject, ID_Sender, EntryCode) VALUES("
+				+ booking.ID_ArchiveCode + ", '" + booking.DocumentNumber + "', '" + booking.Date.Date + "', " + booking.Year
+				+ ", '" + booking.Subject + "', " + booking.ID_Sender + ", '" + booking.EntryCode + "')";
 			command = new SqlCommand(sql, connection);
 			adapter.InsertCommand = command;
 			adapter.InsertCommand.ExecuteNonQuery();
@@ -468,8 +467,8 @@ namespace DAL
 			connection.Open();
 			adapter = new SqlDataAdapter();
 
-			string sql = "UPDATE ArchiveBooking SET ID_ArchiveCode=" + booking.ID_ArchiveCode + ", DocumentNumber='" 
-				+ booking.DocumentNumber + "', Date='" + booking.Date.Date + "', Year=" + booking.Year + ", Subject='" + booking.Subject 
+			string sql = "UPDATE ArchiveBooking SET ID_ArchiveCode=" + booking.ID_ArchiveCode + ", DocumentNumber='"
+				+ booking.DocumentNumber + "', Date='" + booking.Date.Date + "', Year=" + booking.Year + ", Subject='" + booking.Subject
 				+ "', ID_Sender=" + booking.ID_Sender + ", EntryCode='" + booking.EntryCode + "' WHERE ID_ArchiveBooking=" + id;
 
 			command = new SqlCommand(sql, connection);
@@ -483,7 +482,7 @@ namespace DAL
 		#endregion
 
 		#region Properties
-		
+
 
 		#endregion
 	}

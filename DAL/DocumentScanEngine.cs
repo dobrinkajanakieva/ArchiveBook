@@ -1,20 +1,18 @@
 ﻿using Models;
-using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Text;
 
 namespace DAL
 {
 	public class DocumentScanEngine : DBConnection
 	{
-		public DocumentScanEngine//(string connectionString)
+		public DocumentScanEngine()  //(string connectionString)
 			: base() { }  // (connectionString) { }
 
-	#region Functions
+		#region Functions
 
-	public List<DocumentScan> GetDocuments()
+		public List<DocumentScan> GetDocuments()
 		{
 			List<DocumentScan> result = new List<DocumentScan>();
 
@@ -69,7 +67,7 @@ namespace DAL
 
 			connection.Open();
 
-			string sql = "SELECT * FROM DocumentScan WHERE ID_ArchiveBooking = @id" ;
+			string sql = "SELECT * FROM DocumentScan WHERE ID_ArchiveBooking = @id";
 			command = new SqlCommand(sql, connection);
 			command.Parameters.AddWithValue("@id", id);
 			reader = command.ExecuteReader();
@@ -165,13 +163,9 @@ namespace DAL
 		#endregion
 
 		#region Properties
-		public string connectionString = "Server=(localdb)\\mssqllocaldb;Database=Archive;Trusted_Connection=True;MultipleActiveResultSets=true";
 
-		public SqlConnection connection { get; set; }
-		public SqlCommand command { get; set; }
-		public SqlDataReader reader { get; set; }
-		public SqlDataAdapter adapter { get; set; }
 
 		#endregion
 	}
 }
+
