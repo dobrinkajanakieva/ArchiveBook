@@ -10,204 +10,164 @@ namespace DALTests
 	public class ArchiveBookingTest
 	{
         [Fact]
-        public void Test1() 
+        public void GetBookingByID() 
         {
             //Arrange
-            var archiveBookingService = new ArchiveBookingService();
-            const int ID_ArchiveCode = 22;
-            const string DocumentNumber = "01";
-            DateTime Date = new DateTime(2020, 03, 03);
-            const int Year = 20;
-            const string Subject = "gfgvfd";
-            const int ID_Sender = 2;
-            const string EntryCode = "02-03/20";
+            var archiveBookingEngine = new ArchiveBookingEngine();
 
             //Act
-            ArchiveBooking booking = archiveBookingService.GetArchiveBookingByID(30);
-            bool isValid = true;
-            if (ID_ArchiveCode != booking.ID_ArchiveCode || DocumentNumber != booking.DocumentNumber || Date.Date != booking.Date ||
-                Year != booking.Year || Subject != booking.Subject || ID_Sender != booking.ID_Sender || EntryCode != booking.EntryCode)
-                isValid = false;
+            ArchiveBooking booking = archiveBookingEngine.GetArchiveBookingByID(53);
 
             //Assert
-            Assert.True(isValid, "The Archive Booking with ID=30 is not valid");
+            Assert.Equal(53, booking.ID_ArchiveBooking);
+            Assert.Equal(24, booking.ID_ArchiveCode);
+            Assert.Equal("03", booking.DocumentNumber);
+            Assert.Equal(new DateTime(2020,03,04), booking.Date);
+            Assert.Equal(20, booking.Year);
+            Assert.Equal("grgrg", booking.Subject);
+            Assert.Equal(1, booking.ID_Sender);
+            Assert.Equal("04-03/20", booking.EntryCode);
         }
 
         [Fact]
-        public void Test2() 
+        public void GetBookingByDocumentNumber() 
         {
             //Arrange
-            var archiveBookingService = new ArchiveBookingService();
-            const int ID_ArchiveCode = 22;
-            const string DocumentNumber = "01";
-            DateTime Date = new DateTime(2020, 03, 03);
-            const int Year = 20;
-            const string Subject = "gfgvfd";
-            const int ID_Sender = 2;
-            const string EntryCode = "02-03/20";
+            var archiveBookingEngine = new ArchiveBookingEngine();
 
             //Act
-            ArchiveBooking booking = archiveBookingService.GetArchiveBookingByDocumentNumber(DocumentNumber);
-            bool isValid = true;
-            if (ID_ArchiveCode != booking.ID_ArchiveCode || DocumentNumber != booking.DocumentNumber || Date.Date != booking.Date ||
-                Year != booking.Year || Subject != booking.Subject || ID_Sender != booking.ID_Sender || EntryCode != booking.EntryCode)
-                isValid = false;
+            ArchiveBooking booking = archiveBookingEngine.GetArchiveBookingByDocumentNumber("03");
 
             //Assert
-            Assert.True(isValid, "The Archive Booking with Document Number=01 is not valid");
+            Assert.Equal(53, booking.ID_ArchiveBooking);
+            Assert.Equal(24, booking.ID_ArchiveCode);
+            Assert.Equal("03", booking.DocumentNumber);
+            Assert.Equal(new DateTime(2020, 03, 04), booking.Date);
+            Assert.Equal(20, booking.Year);
+            Assert.Equal("grgrg", booking.Subject);
+            Assert.Equal(1, booking.ID_Sender);
+            Assert.Equal("04-03/20", booking.EntryCode);
         }
 
         [Fact]
-        public void Test3()
+        public void GetBookingByEntryCode()
         {
             //Arrange
-            var archiveBookingService = new ArchiveBookingService();
-            List<ArchiveBooking> bookings = new List<ArchiveBooking>();
-            const int ID_ArchiveCode = 22;
-            const string DocumentNumber = "01";
-            DateTime Date = new DateTime(2020, 03, 03);
-            const int Year = 20;
-            const string Subject = "ghjkfl";
-            const int ID_Sender = 1;
-            const string EntryCode = "04-01/20";
+            var archiveBookingEngine = new ArchiveBookingEngine();
 
             //Act
-            ArchiveBooking booking = new ArchiveBooking();
-            booking.ID_ArchiveCode = ID_ArchiveCode;
-            booking.DocumentNumber = DocumentNumber;
-            booking.Date = Date.Date;
-            booking.Year = Year;
-            booking.Subject = Subject;
-            booking.ID_Sender = ID_Sender;
-            booking.EntryCode = EntryCode;
-            bookings.Add(booking);
-            List<ArchiveBooking> result = archiveBookingService.GetArchiveBookingsByYear(Year);
-            bool isValid = true;
-            foreach(ArchiveBooking b in result)
+            ArchiveBooking booking = archiveBookingEngine.GetArchiveBookingByEntryCode("04-03/20");
+
+            //Assert
+            Assert.Equal(53, booking.ID_ArchiveBooking);
+            Assert.Equal(24, booking.ID_ArchiveCode);
+            Assert.Equal("03", booking.DocumentNumber);
+            Assert.Equal(new DateTime(2020, 03, 04), booking.Date);
+            Assert.Equal(20, booking.Year);
+            Assert.Equal("grgrg", booking.Subject);
+            Assert.Equal(1, booking.ID_Sender);
+            Assert.Equal("04-03/20", booking.EntryCode);
+        }
+
+        [Fact]
+        public void GetBookingsByYear()
+        {
+            //Arrange
+            var archiveBookingEngine = new ArchiveBookingEngine();
+
+            //Act
+            List<ArchiveBooking> result = archiveBookingEngine.GetArchiveBookingsByYear(20);
+
+            //Assert
+            foreach (ArchiveBooking booking in result)
             {
-                if (b.Year != Year)
-                    isValid = false;
+                Assert.Equal(53, booking.ID_ArchiveBooking);
+                Assert.Equal(24, booking.ID_ArchiveCode);
+                Assert.Equal("03", booking.DocumentNumber);
+                Assert.Equal(new DateTime(2020, 03, 04), booking.Date);
+                Assert.Equal(20, booking.Year);
+                Assert.Equal("grgrg", booking.Subject);
+                Assert.Equal(1, booking.ID_Sender);
+                Assert.Equal("04-03/20", booking.EntryCode);
             }
-
-            //Assert
-            Assert.True(isValid, "The Archive Booking with Year=20 is not valid");
         }
 
         [Fact]
-        public void Test4()
+        public void GetBookingsBySubject()
         {
             //Arrange
-            var archiveBookingService = new ArchiveBookingService();
-            List<ArchiveBooking> bookings = new List<ArchiveBooking>();
-            const int ID_ArchiveCode = 22;
-            const string DocumentNumber = "01";
-            DateTime Date = new DateTime(2020, 03, 03);
-            const int Year = 20;
-            const string Subject = "ghjkfl";
-            const int ID_Sender = 1;
-            const string EntryCode = "04-01/20";
+            var archiveBookingEngine = new ArchiveBookingEngine();
 
             //Act
-            ArchiveBooking booking = new ArchiveBooking();
-            booking.ID_ArchiveCode = ID_ArchiveCode;
-            booking.DocumentNumber = DocumentNumber;
-            booking.Date = Date;
-            booking.Year = Year;
-            booking.Subject = Subject;
-            booking.ID_Sender = ID_Sender;
-            booking.EntryCode = EntryCode;
-            bookings.Add(booking);
-            List<ArchiveBooking> result = archiveBookingService.GetArchiveBookingsBySubject(Subject);
-            bool isValid = true;
-            foreach (ArchiveBooking b in result)
-            {
-                if (b.Subject != Subject)
-                    isValid = false;
-            }
+
+            List<ArchiveBooking> result = archiveBookingEngine.GetArchiveBookingsBySubject("grgrg");
 
             //Assert
-            Assert.True(isValid, "The Archive Booking with Subject=ghjkfl is not valid");
+            foreach (ArchiveBooking booking in result)
+            {
+                Assert.Equal(53, booking.ID_ArchiveBooking);
+                Assert.Equal(24, booking.ID_ArchiveCode);
+                Assert.Equal("03", booking.DocumentNumber);
+                Assert.Equal(new DateTime(2020, 03, 04), booking.Date);
+                Assert.Equal(20, booking.Year);
+                Assert.Equal("grgrg", booking.Subject);
+                Assert.Equal(1, booking.ID_Sender);
+                Assert.Equal("04-03/20", booking.EntryCode);
+            }
         }
 
         [Fact]
-        public void Test5()
+        public void GetBookingsByArchiveCode()
         {
             //Arrange
-            var archiveBookingService = new ArchiveBookingService();
-            List<ArchiveBooking> bookings = new List<ArchiveBooking>();
-            const string ArchiveCode = "04";
-            const int ID_ArchiveCode = 22;
-            const string DocumentNumber = "01";
-            DateTime Date = new DateTime(2020, 03, 03);
-            const int Year = 20;
-            const string Subject = "ghjkfl";
-            const int ID_Sender = 1;
-            const string EntryCode = "04-01/20";
+            var archiveBookingEngine = new ArchiveBookingEngine();
 
             //Act
-            ArchiveBooking booking = new ArchiveBooking();
-            booking.ID_ArchiveCode = ID_ArchiveCode;
-            booking.DocumentNumber = DocumentNumber;
-            booking.Date = Date;
-            booking.Year = Year;
-            booking.Subject = Subject;
-            booking.ID_Sender = ID_Sender;
-            booking.EntryCode = EntryCode;
-            bookings.Add(booking);
-            List<ArchiveBooking> result = archiveBookingService.GetArchiveBookingsByArchiveCode(ArchiveCode);
-            bool isValid = true;
-            foreach (ArchiveBooking b in result)
-            {
-                if (b.ID_ArchiveCode != 22)
-                    isValid = false;
-            }
+            List<ArchiveBooking> result = archiveBookingEngine.GetArchiveBookingsByArchiveCode("0402");
+
 
             //Assert
-            Assert.True(isValid, "The Archive Booking with Archive Code=04 is not valid");
+            foreach (ArchiveBooking booking in result)
+            {
+                Assert.Equal(53, booking.ID_ArchiveBooking);
+                Assert.Equal(24, booking.ID_ArchiveCode);
+                Assert.Equal("03", booking.DocumentNumber);
+                Assert.Equal(new DateTime(2020, 03, 04), booking.Date);
+                Assert.Equal(20, booking.Year);
+                Assert.Equal("grgrg", booking.Subject);
+                Assert.Equal(1, booking.ID_Sender);
+                Assert.Equal("04-03/20", booking.EntryCode);
+            }
         }
 
         [Fact]
-        public void Test6()
+        public void GetBookingsBySender()
         {
             //Arrange
-            var archiveBookingService = new ArchiveBookingService();
-            List<ArchiveBooking> bookings = new List<ArchiveBooking>();
-            const string Sender = "gtdhtd";
-            const int ID_ArchiveCode = 22;
-            const string DocumentNumber = "01";
-            DateTime Date = new DateTime(2020, 03, 03);
-            const int Year = 20;
-            const string Subject = "ghjkfl";
-            const int ID_Sender = 1;
-            const string EntryCode = "04-01/20";
+            var archiveBookingEngine = new ArchiveBookingEngine();
 
             //Act
-            ArchiveBooking booking = new ArchiveBooking();
-            booking.ID_ArchiveCode = ID_ArchiveCode;
-            booking.DocumentNumber = DocumentNumber;
-            booking.Date = Date;
-            booking.Year = Year;
-            booking.Subject = Subject;
-            booking.ID_Sender = ID_Sender;
-            booking.EntryCode = EntryCode;
-            bookings.Add(booking);
-            List<ArchiveBooking> result = archiveBookingService.GetArchiveBookingsBySender(Sender);
-            bool isValid = true;
-            foreach (ArchiveBooking b in result)
-            {
-                if (b.ID_Sender != 3)
-                    isValid = false;
-            }
-
+            List<ArchiveBooking> result = archiveBookingEngine.GetArchiveBookingsBySender("gfresf");
+            
             //Assert
-            Assert.True(isValid, "The Archive Booking with Sender=gfresf is not valid");
+            foreach (ArchiveBooking booking in result)
+            {
+                Assert.Equal(53, booking.ID_ArchiveBooking);
+                Assert.Equal(24, booking.ID_ArchiveCode);
+                Assert.Equal("03", booking.DocumentNumber);
+                Assert.Equal(new DateTime(2020, 03, 04), booking.Date);
+                Assert.Equal(20, booking.Year);
+                Assert.Equal("grgrg", booking.Subject);
+                Assert.Equal(1, booking.ID_Sender);
+                Assert.Equal("04-03/20", booking.EntryCode);
+            }
         }
 
         [Fact]
-        public void Test7() 
+        public void InsertArchiveBooking() 
         {
             //Arrange
-            var archiveBookingService = new ArchiveBookingService();
+            var archiveBookingEngine = new ArchiveBookingEngine();
             const int ID = 100;
             const int ID_ArchiveCode = 22;
             const string DocumentNumber = "02";
@@ -219,27 +179,30 @@ namespace DALTests
 
             //Act
             ArchiveBooking booking = new ArchiveBooking(ID, ID_ArchiveCode, DocumentNumber, Date.Date, Year, Subject, ID_Sender, EntryCode);
-            archiveBookingService.InsertArchiveBooking(booking);
+            archiveBookingEngine.InsertArchiveBooking(booking);
             booking = null;
-            booking = archiveBookingService.GetArchiveBookingByDocumentNumber(DocumentNumber);
-            bool isValid = true;
-            if (booking.DocumentNumber != DocumentNumber)
-                isValid = false;
+            booking = archiveBookingEngine.GetArchiveBookingByDocumentNumber(DocumentNumber);
 
             //Assert
-            Assert.True(isValid, "The Archive Booking with Document Number=02 is not valid");
+            Assert.Equal(22, booking.ID_ArchiveCode);
+            Assert.Equal("02", booking.DocumentNumber);
+            Assert.Equal(new DateTime(2020, 03, 03), booking.Date);
+            Assert.Equal(20, booking.Year);
+            Assert.Equal("ghjkfl", booking.Subject);
+            Assert.Equal(2, booking.ID_Sender);
+            Assert.Equal("04-02/20", booking.EntryCode);
         }
 
         [Fact]
-        public void Test8()
+        public void InsertArchiveBookings()
         {
             //Arrange
-            var archiveBookingService = new ArchiveBookingService();
+            var archiveBookingEngine = new ArchiveBookingEngine();
             List<ArchiveBooking> bookings = new List<ArchiveBooking>();
             List<ArchiveBooking> result = new List<ArchiveBooking>();
             const int ID1 = 100;
             const int ID_ArchiveCode1 = 22;
-            const string DocumentNumber1 = "02";
+            const string DocumentNumber1 = "04";
             DateTime Date1 = new DateTime(2020, 03, 03);
             const int Year1 = 20;
             const string Subject1 = "ghjkfl";
@@ -247,7 +210,7 @@ namespace DALTests
             const string EntryCode1 = "04-02/20";
             const int ID2 = 100;
             const int ID_ArchiveCode2 = 22;
-            const string DocumentNumber2 = "02";
+            const string DocumentNumber2 = "05";
             DateTime Date2 = new DateTime(2020, 03, 03);
             const int Year2 = 20;
             const string Subject2 = "ghjkfl";
@@ -255,7 +218,7 @@ namespace DALTests
             const string EntryCode2 = "04-02/20";
             const int ID3 = 100;
             const int ID_ArchiveCode3 = 22;
-            const string DocumentNumber3 = "02";
+            const string DocumentNumber3 = "06";
             DateTime Date3 = new DateTime(2020, 03, 03);
             const int Year3 = 20;
             const string Subject3 = "ghjkfl";
@@ -269,53 +232,60 @@ namespace DALTests
             bookings.Add(booking1);
             bookings.Add(booking2);
             bookings.Add(booking3);
-            archiveBookingService.InsertArchiveBookings(bookings);
-            result.Add(archiveBookingService.GetArchiveBookingByDocumentNumber(DocumentNumber1));
-            result.Add(archiveBookingService.GetArchiveBookingByDocumentNumber(DocumentNumber2));
-            result.Add(archiveBookingService.GetArchiveBookingByDocumentNumber(DocumentNumber3));
+            archiveBookingEngine.InsertArchiveBookings(bookings);
+            result.Add(archiveBookingEngine.GetArchiveBookingByDocumentNumber(DocumentNumber1));
+            result.Add(archiveBookingEngine.GetArchiveBookingByDocumentNumber(DocumentNumber2));
+            result.Add(archiveBookingEngine.GetArchiveBookingByDocumentNumber(DocumentNumber3));
             bool isValid = true;
-            foreach(ArchiveBooking booking in result)
-            {
-                if (booking.DocumentNumber!=DocumentNumber1)
-                    isValid = false;
-            }
 
             //Assert
-            Assert.True(isValid, "Not valid");
+            for(int i=0; i<result.Count; i++)
+            {
+                Assert.Equal(bookings[i].ID_ArchiveCode, result[i].ID_ArchiveCode);
+                Assert.Equal(bookings[i].DocumentNumber, result[i].DocumentNumber);
+                Assert.Equal(bookings[i].Date, result[i].Date);
+                Assert.Equal(bookings[i].Year, result[i].Year);
+                Assert.Equal(bookings[i].Subject, result[i].Subject);
+                Assert.Equal(bookings[i].ID_Sender, result[i].ID_Sender);
+                Assert.Equal(bookings[i].EntryCode, result[i].EntryCode);
+            }
         }
 
         [Fact]
-        public void Test9() 
+        public void UpdateArchiveBookingByID() 
         {
             //Arrange
-            var archiveBookingService = new ArchiveBookingService();
+            var archiveBookingEngine = new ArchiveBookingEngine();
             const int ID = 100;
             const int ID_ArchiveCode = 22;
             const string DocumentNumber = "02";
             DateTime Date = new DateTime(2020, 03, 03);
             const int Year = 20;
-            const string Subject = "ghjkfl";
+            const string Subject = "grdfdger";
             const int ID_Sender = 2;
             const string EntryCode = "04-02/20";
 
             //Act
             ArchiveBooking booking = new ArchiveBooking(ID, ID_ArchiveCode, DocumentNumber, Date.Date, Year, Subject, ID_Sender, EntryCode);
-            archiveBookingService.UpdateArchiveBookingByID(1, booking);
+            archiveBookingEngine.UpdateArchiveBookingByID(56, booking);
             booking = null;
-            booking = archiveBookingService.GetArchiveBookingByID(1);
-            bool isValid = true;
-            if (DocumentNumber != booking.DocumentNumber)
-                isValid = false;
+            booking = archiveBookingEngine.GetArchiveBookingByID(56);
 
             //Assert
-            Assert.True(isValid, "The Archive Booking with ID=1 is not valid");
+            Assert.Equal(22, booking.ID_ArchiveCode);
+            Assert.Equal("02", booking.DocumentNumber);
+            Assert.Equal(Date, booking.Date);
+            Assert.Equal(20, booking.Year);
+            Assert.Equal("grdfdger", booking.Subject);
+            Assert.Equal(2, booking.ID_Sender);
+            Assert.Equal("04-02/20", booking.EntryCode);
         }
 
         [Fact]
-        public void Test10()
+        public void DeleteBookingsByArchiveCodeID()
         {
             //Arrange
-            var archiveBookingService = new ArchiveBookingService();
+            var archiveBookingEngine = new ArchiveBookingEngine();
             const int ID = 100;
             const int ID_ArchiveCode = 22;
             const string DocumentNumber = "03";
@@ -327,10 +297,10 @@ namespace DALTests
 
             //Act
             ArchiveBooking booking = new ArchiveBooking(ID, ID_ArchiveCode, DocumentNumber, Date.Date, Year, Subject, ID_Sender, EntryCode);
-            archiveBookingService.InsertArchiveBooking(booking);
-            archiveBookingService.DeleteArchiveBookingsByArchiveCodeID(ID_ArchiveCode);
+            archiveBookingEngine.InsertArchiveBooking(booking);
+            archiveBookingEngine.DeleteArchiveBookingsByArchiveCodeID(ID_ArchiveCode);
             booking = null;
-            booking = archiveBookingService.GetArchiveBookingByDocumentNumber(DocumentNumber);
+            booking = archiveBookingEngine.GetArchiveBookingByDocumentNumber(DocumentNumber);
             bool isValid = true;
             if (booking.DocumentNumber != null)
                 isValid = false;
@@ -340,15 +310,15 @@ namespace DALTests
         }
 
         [Fact]
-        public void Test11()
+        public void DeleteBookingById()
         {
             //Arrange
-            var archiveBookingService = new ArchiveBookingService();
+            var archiveBookingEngine = new ArchiveBookingEngine();
 
             //Act
-            archiveBookingService.DeleteArchiveBookingById(1);
+            archiveBookingEngine.DeleteArchiveBookingById(1);
             ArchiveBooking booking = null;
-            booking = archiveBookingService.GetArchiveBookingByID(1);
+            booking = archiveBookingEngine.GetArchiveBookingByID(1);
             bool isValid = true;
             if (booking.DocumentNumber != null)
                 isValid = false;
@@ -358,10 +328,10 @@ namespace DALTests
         }
 
         [Fact]
-        public void Test12()
+        public void DeleteBookingsBySenderID()
         {
             //Arrange
-            var archiveBookingService = new ArchiveBookingService();
+            var archiveBookingEngine = new ArchiveBookingEngine();
             const int ID = 100;
             const int ID_ArchiveCode = 22;
             const string DocumentNumber = "03";
@@ -373,10 +343,10 @@ namespace DALTests
 
             //Act
             ArchiveBooking booking = new ArchiveBooking(ID, ID_ArchiveCode, DocumentNumber, Date.Date, Year, Subject, ID_Sender, EntryCode);
-            archiveBookingService.InsertArchiveBooking(booking);
-            archiveBookingService.DeleteArchiveBookingsBySenderID(ID_Sender);
+            archiveBookingEngine.InsertArchiveBooking(booking);
+            archiveBookingEngine.DeleteArchiveBookingsBySenderID(ID_Sender);
             booking = null;
-            booking = archiveBookingService.GetArchiveBookingByDocumentNumber(DocumentNumber);
+            booking = archiveBookingEngine.GetArchiveBookingByDocumentNumber(DocumentNumber);
             bool isValid = true;
             if (booking.DocumentNumber != null)
                 isValid = false;
@@ -386,10 +356,10 @@ namespace DALTests
         }
 
         [Fact]
-        public void Test13()
+        public void DeleteBookingsByYear()
         {
             //Arrange
-            var archiveBookingService = new ArchiveBookingService();
+            var archiveBookingEngine = new ArchiveBookingEngine();
             const int ID = 100;
             const int ID_ArchiveCode = 22;
             const string DocumentNumber = "03";
@@ -401,10 +371,10 @@ namespace DALTests
 
             //Act
             ArchiveBooking booking = new ArchiveBooking(ID, ID_ArchiveCode, DocumentNumber, Date.Date, Year, Subject, ID_Sender, EntryCode);
-            archiveBookingService.InsertArchiveBooking(booking);
-            archiveBookingService.DeleteArchiveBookingsByYear(Year);
+            archiveBookingEngine.InsertArchiveBooking(booking);
+            archiveBookingEngine.DeleteArchiveBookingsByYear(Year);
             booking = null;
-            booking = archiveBookingService.GetArchiveBookingByDocumentNumber(DocumentNumber);
+            booking = archiveBookingEngine.GetArchiveBookingByDocumentNumber(DocumentNumber);
             bool isValid = true;
             if (booking.DocumentNumber != null)
                 isValid = false;
@@ -414,10 +384,10 @@ namespace DALTests
         }
 
         [Fact]
-        public void Test14()
+        public void DeleteBookingsByDocumentNumber()
         {
             //Arrange
-            var archiveBookingService = new ArchiveBookingService();
+            var archiveBookingEngine = new ArchiveBookingEngine();
             const int ID = 100;
             const int ID_ArchiveCode = 22;
             const string DocumentNumber = "03";
@@ -429,10 +399,10 @@ namespace DALTests
 
             //Act
             ArchiveBooking booking = new ArchiveBooking(ID, ID_ArchiveCode, DocumentNumber, Date.Date, Year, Subject, ID_Sender, EntryCode);
-            archiveBookingService.InsertArchiveBooking(booking);
-            archiveBookingService.DeleteArchiveBookingsByDocumentNumber(DocumentNumber);
+            archiveBookingEngine.InsertArchiveBooking(booking);
+            archiveBookingEngine.DeleteArchiveBookingsByDocumentNumber(DocumentNumber);
             booking = null;
-            booking = archiveBookingService.GetArchiveBookingByDocumentNumber(DocumentNumber);
+            booking = archiveBookingEngine.GetArchiveBookingByDocumentNumber(DocumentNumber);
             bool isValid = true;
             if (booking.DocumentNumber != null)
                 isValid = false;
@@ -442,10 +412,10 @@ namespace DALTests
         }
 
         [Fact]
-        public void Test15()
+        public void DeleteBookingsByDate()
         {
             //Arrange
-            var archiveBookingService = new ArchiveBookingService();
+            var archiveBookingEngine = new ArchiveBookingEngine();
             const int ID = 100;
             const int ID_ArchiveCode = 22;
             const string DocumentNumber = "03";
@@ -457,10 +427,10 @@ namespace DALTests
 
             //Act
             ArchiveBooking booking = new ArchiveBooking(ID, ID_ArchiveCode, DocumentNumber, Date.Date, Year, Subject, ID_Sender, EntryCode);
-            archiveBookingService.InsertArchiveBooking(booking);
-            archiveBookingService.DeleteArchiveBookingsByDate(Date);
+            archiveBookingEngine.InsertArchiveBooking(booking);
+            archiveBookingEngine.DeleteArchiveBookingsByDate(Date);
             booking = null;
-            booking = archiveBookingService.GetArchiveBookingByDocumentNumber(DocumentNumber);
+            booking = archiveBookingEngine.GetArchiveBookingByDocumentNumber(DocumentNumber);
             bool isValid = true;
             if (booking.DocumentNumber != null)
                 isValid = false;
@@ -470,10 +440,10 @@ namespace DALTests
         }
 
         [Fact]
-        public void Test16()
+        public void DeleteBookingsBySubject()
         {
             //Arrange
-            var archiveBookingService = new ArchiveBookingService();
+            var archiveBookingEngine = new ArchiveBookingEngine();
             const int ID = 100;
             const int ID_ArchiveCode = 22;
             const string DocumentNumber = "03";
@@ -485,10 +455,10 @@ namespace DALTests
 
             //Act
             ArchiveBooking booking = new ArchiveBooking(ID, ID_ArchiveCode, DocumentNumber, Date.Date, Year, Subject, ID_Sender, EntryCode);
-            archiveBookingService.InsertArchiveBooking(booking);
-            archiveBookingService.DeleteArchiveBookingsBySubject(Subject);
+            archiveBookingEngine.InsertArchiveBooking(booking);
+            archiveBookingEngine.DeleteArchiveBookingsBySubject(Subject);
             booking = null;
-            booking = archiveBookingService.GetArchiveBookingByDocumentNumber(DocumentNumber);
+            booking = archiveBookingEngine.GetArchiveBookingByDocumentNumber(DocumentNumber);
             bool isValid = true;
             if (booking.DocumentNumber != null)
                 isValid = false;
@@ -498,10 +468,10 @@ namespace DALTests
         }
 
         [Fact]
-        public void Test17()
+        public void DeleteBookingsByEntryCode()
         {
             //Arrange
-            var archiveBookingService = new ArchiveBookingService();
+            var archiveBookingEngine = new ArchiveBookingEngine();
             const int ID = 100;
             const int ID_ArchiveCode = 22;
             const string DocumentNumber = "03";
@@ -513,10 +483,10 @@ namespace DALTests
 
             //Act
             ArchiveBooking booking = new ArchiveBooking(ID, ID_ArchiveCode, DocumentNumber, Date.Date, Year, Subject, ID_Sender, EntryCode);
-            archiveBookingService.InsertArchiveBooking(booking);
-            archiveBookingService.DeleteArchiveBookingsByEntryCode(EntryCode);
+            archiveBookingEngine.InsertArchiveBooking(booking);
+            archiveBookingEngine.DeleteArchiveBookingsByEntryCode(EntryCode);
             booking = null;
-            booking = archiveBookingService.GetArchiveBookingByEntryCode(EntryCode);
+            booking = archiveBookingEngine.GetArchiveBookingByEntryCode(EntryCode);
             bool isValid = true;
             if (booking.DocumentNumber != null)
                 isValid = false;

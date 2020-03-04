@@ -26,7 +26,7 @@ namespace Models
         public DateTime Date { get; set; }
         public int Year { get; set; }
         public string Subject { get; set; }
-        public int ID_Sender { get; set; }
+        public int? ID_Sender { get; set; }
         public string EntryCode { get; set; }
     }
 }

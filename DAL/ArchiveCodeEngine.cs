@@ -1,15 +1,16 @@
 ﻿using Models;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Reflection;
 using System.Text;
 
 namespace DAL
 {
-	public class ArchiveCodeService
+	public class ArchiveCodeEngine
 	{
-		public ArchiveCodeService() 
+		public ArchiveCodeEngine() 
 		{
 			connection = new SqlConnection(connectionString);
 		}
@@ -28,7 +29,7 @@ namespace DAL
 
 			while(reader.Read())
 			{
-				ArchiveCode code = new ArchiveCode(int.Parse(reader.GetInt32(0).ToString()), reader.GetString(1), reader.GetString(2));
+				ArchiveCode code = new ArchiveCode(reader.GetInt32("ID_ArchiveCode"), reader.GetString("Code"), reader.GetString("Name"));
 
 				result.Add(code);
 			}
@@ -43,29 +44,10 @@ namespace DAL
 		public List<ArchiveCode> GetArchiveCodesByCodes(List<string> codes)
 		{
 			List<ArchiveCode> result = new List<ArchiveCode>();
-			
-			connection.Open();
-
-			StringBuilder sql = new StringBuilder("SELECT * FROM ArchiveCode WHERE Code IN (");
-			for(int i=0; i<codes.Count; i++)
+			foreach(string code in codes)
 			{
-				sql.Append("'" + codes[i] + "', ");
+				result.Add(GetArchiveCodeByCode(code));
 			}
-			string sqlCommand = sql.ToString().Substring(0, sql.ToString().Length - 2) + ")";
-			command = new SqlCommand(sqlCommand, connection);
-			reader = command.ExecuteReader();
-
-			while (reader.Read())
-			{
-				ArchiveCode code = new ArchiveCode(int.Parse(reader.GetInt32(0).ToString()), reader.GetString(1), reader.GetString(2));
-
-				result.Add(code);
-			}
-
-			reader.Close();
-			command.Dispose();
-			connection.Close();
-
 			return result;
 		}
 
@@ -75,15 +57,16 @@ namespace DAL
 
 			connection.Open();
 
-			string sql = "SELECT * FROM ArchiveCode WHERE ID_ArchiveCode="+id;
+			string sql = "SELECT * FROM ArchiveCode WHERE ID_ArchiveCode = @id";
 			command = new SqlCommand(sql, connection);
+			command.Parameters.AddWithValue("@id", id);
 			reader = command.ExecuteReader();
 
 			while (reader.Read())
 			{
-				result.ID_ArchiveCode = int.Parse(reader.GetInt32(0).ToString());
-				result.Code = reader.GetString(1);
-				result.Name = reader.GetString(2);
+				result.ID_ArchiveCode = reader.GetInt32("ID_ArchiveCode");
+				result.Code = reader.GetString("Code");
+				result.Name = reader.GetString("Name");
 			}
 
 			reader.Close();
@@ -99,15 +82,16 @@ namespace DAL
 
 			connection.Open();
 
-			string sql = "SELECT * FROM ArchiveCode WHERE Code='" + code + "'";
+			string sql = "SELECT * FROM ArchiveCode WHERE Code = @code";
 			command = new SqlCommand(sql, connection);
+			command.Parameters.AddWithValue("@code", code);
 			reader = command.ExecuteReader();
 
 			while (reader.Read())
 			{
-				result.ID_ArchiveCode = int.Parse(reader.GetInt32(0).ToString());
-				result.Code = reader.GetString(1);
-				result.Name = reader.GetString(2);
+				result.ID_ArchiveCode = reader.GetInt32("ID_ArchiveCode");
+				result.Code = reader.GetString("Code");
+				result.Name = reader.GetString("Name");
 			}
 
 			reader.Close();
@@ -122,8 +106,10 @@ namespace DAL
 			connection.Open();
 			adapter = new SqlDataAdapter();
 
-			string sql = "INSERT INTO ArchiveCode(Code, Name) VALUES('"+ code.Code + "', '" + code.Name + "')";
+			string sql = "INSERT INTO ArchiveCode(Code, Name) VALUES(@code, @name)";
 			command = new SqlCommand(sql, connection);
+			command.Parameters.AddWithValue("@code", code.Code);
+			command.Parameters.AddWithValue("@name", code.Name);
 			adapter.InsertCommand = command;
 			adapter.InsertCommand.ExecuteNonQuery();
 
@@ -133,22 +119,10 @@ namespace DAL
 
 		public void InsertArchiveCodes(List<ArchiveCode> codes)
 		{
-			connection.Open();
-			adapter = new SqlDataAdapter();
-
-			StringBuilder sql = new StringBuilder("INSERT INTO ArchiveCode(Code, Name) VALUES");
-
 			foreach(ArchiveCode code in codes)
 			{
-				sql.Append("('" + code.Code + "', '" + code.Name + "'),");
+				InsertArchiveCode(code);
 			}
-
-			command = new SqlCommand(sql.ToString().Substring(0, sql.ToString().Length-1), connection);
-			adapter.InsertCommand = command;
-			adapter.InsertCommand.ExecuteNonQuery();
-
-			command.Dispose();
-			connection.Close();
 		}
 
 		public void DeleteArchiveCodeById(int id)
@@ -156,9 +130,10 @@ namespace DAL
 			connection.Open();
 			adapter = new SqlDataAdapter();
 
-			string sql = "DELETE FROM ArchiveCode WHERE ID_ArchiveCode=" + id;
+			string sql = "DELETE FROM ArchiveCode WHERE ID_ArchiveCode = @id";
 
 			command = new SqlCommand(sql, connection);
+			command.Parameters.AddWithValue("@id", id);
 			adapter.DeleteCommand = command;
 			adapter.DeleteCommand.ExecuteNonQuery();
 
@@ -171,9 +146,10 @@ namespace DAL
 			connection.Open();
 			adapter = new SqlDataAdapter();
 
-			string sql = "DELETE FROM ArchiveCode WHERE Code='" + code + "'";
+			string sql = "DELETE FROM ArchiveCode WHERE Code = @code";
 
 			command = new SqlCommand(sql, connection);
+			command.Parameters.AddWithValue("@code", code);
 			adapter.DeleteCommand = command;
 			adapter.DeleteCommand.ExecuteNonQuery();
 
@@ -183,24 +159,10 @@ namespace DAL
 
 		public void DeleteArchiveCodesByCodes(List<string> codes)
 		{
-			connection.Open();
-			adapter = new SqlDataAdapter();
-
-			StringBuilder sql = new StringBuilder("DELETE FROM ArchiveCode WHERE Code IN (");
-
-			for (int i=0; i < codes.Count; i++) 
+			foreach(string code in codes)
 			{
-				sql.Append("'" + codes[i] + "', ");
+				DeleteArchiveCodeByCode(code);
 			}
-
-			string sqlCommand = sql.ToString().Substring(0, sql.ToString().Length - 2) + ")";
-
-			command = new SqlCommand(sqlCommand, connection);
-			adapter.DeleteCommand = command;
-			adapter.DeleteCommand.ExecuteNonQuery();
-
-			command.Dispose();
-			connection.Close();
 		}
 
 		public void UpdateArchiveCodeByID(int id, ArchiveCode code)
@@ -208,9 +170,12 @@ namespace DAL
 			connection.Open();
 			adapter = new SqlDataAdapter();
 
-			string sql = "UPDATE ArchiveCode SET Code='" + code.Code + "', Name='" + code.Name + "' WHERE ID_ArchiveCode=" + id;
+			string sql = "UPDATE ArchiveCode SET Code = @code, Name = @name WHERE ID_ArchiveCode = @id";
 
 			command = new SqlCommand(sql, connection);
+			command.Parameters.AddWithValue("@code", code.Code);
+			command.Parameters.AddWithValue("@name", code.Name);
+			command.Parameters.AddWithValue("@id", id);
 			adapter.UpdateCommand = command;
 			adapter.UpdateCommand.ExecuteNonQuery();
 
@@ -223,9 +188,12 @@ namespace DAL
 			connection.Open();
 			adapter = new SqlDataAdapter();
 
-			string sql = "UPDATE ArchiveCode SET Code='" + code.Code + "', Name='" + code.Name + "' WHERE Code='" + c + "'";
+			string sql = "UPDATE ArchiveCode SET Code = @code, Name = @name WHERE Code = @c";
 
 			command = new SqlCommand(sql, connection);
+			command.Parameters.AddWithValue("@code", code.Code);
+			command.Parameters.AddWithValue("@name", code.Name);
+			command.Parameters.AddWithValue("@c", c);
 			adapter.UpdateCommand = command;
 			adapter.UpdateCommand.ExecuteNonQuery();
 

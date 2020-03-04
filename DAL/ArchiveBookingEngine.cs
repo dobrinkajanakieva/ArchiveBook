@@ -1,14 +1,15 @@
 ﻿using Models;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Text;
 
 namespace DAL
 {
-	public class ArchiveBookingService
+	public class ArchiveBookingEngine
 	{
-		public ArchiveBookingService()
+		public ArchiveBookingEngine()
 		{
 			connection = new SqlConnection(connectionString);
 		}
@@ -29,14 +30,14 @@ namespace DAL
 			{
 				ArchiveBooking booking = new ArchiveBooking();
 
-				booking.ID_ArchiveBooking = int.Parse(reader.GetInt32(0).ToString());
-				booking.ID_ArchiveCode = int.Parse(reader.GetInt32(1).ToString());
-				booking.DocumentNumber = reader.GetString(2);
-				booking.Date = reader.GetDateTime(3);
-				booking.Year = int.Parse(reader.GetInt32(4).ToString());
-				booking.Subject = reader.GetString(5);
-				booking.ID_Sender = int.Parse(reader.GetInt32(6).ToString());
-				booking.EntryCode = reader.GetString(7);
+				booking.ID_ArchiveBooking = reader.GetInt32("ID_ArchiveBooking");
+				booking.ID_ArchiveCode = reader.GetInt32("ID_ArchiveCode");
+				booking.DocumentNumber = reader.GetString("DocumentNumber");
+				booking.Date = reader.GetDateTime("Date");
+				booking.Year = reader.GetInt32("Year");
+				booking.Subject = reader.GetString("Subject");
+				booking.ID_Sender = reader.GetInt32("ID_Sender");
+				booking.EntryCode = reader.GetString("EntryCode");
 
 				result.Add(booking);
 			}
@@ -60,14 +61,14 @@ namespace DAL
 
 			while (reader.Read())
 			{
-				booking.ID_ArchiveBooking = int.Parse(reader.GetInt32(0).ToString());
-				booking.ID_ArchiveCode = int.Parse(reader.GetInt32(1).ToString());
-				booking.DocumentNumber = reader.GetString(2);
-				booking.Date = reader.GetDateTime(3).Date;
-				booking.Year = int.Parse(reader.GetInt32(4).ToString());
-				booking.Subject = reader.GetString(5);
-				booking.ID_Sender = int.Parse(reader.GetInt32(6).ToString());
-				booking.EntryCode = reader.GetString(7);
+				booking.ID_ArchiveBooking = reader.GetInt32("ID_ArchiveBooking");
+				booking.ID_ArchiveCode = reader.GetInt32("ID_ArchiveCode");
+				booking.DocumentNumber = reader.GetString("DocumentNumber");
+				booking.Date = reader.GetDateTime("Date");
+				booking.Year = reader.GetInt32("Year");
+				booking.Subject = reader.GetString("Subject");
+				booking.ID_Sender = reader.GetInt32("ID_Sender");
+				booking.EntryCode = reader.GetString("EntryCode");
 			}
 
 			reader.Close();
@@ -89,14 +90,14 @@ namespace DAL
 
 			while (reader.Read())
 			{
-				booking.ID_ArchiveBooking = int.Parse(reader.GetInt32(0).ToString());
-				booking.ID_ArchiveCode = int.Parse(reader.GetInt32(1).ToString());
-				booking.DocumentNumber = reader.GetString(2);
-				booking.Date = reader.GetDateTime(3).Date;
-				booking.Year = int.Parse(reader.GetInt32(4).ToString());
-				booking.Subject = reader.GetString(5);
-				booking.ID_Sender = int.Parse(reader.GetInt32(6).ToString());
-				booking.EntryCode = reader.GetString(7);
+				booking.ID_ArchiveBooking = reader.GetInt32("ID_ArchiveBooking");
+				booking.ID_ArchiveCode = reader.GetInt32("ID_ArchiveCode");
+				booking.DocumentNumber = reader.GetString("DocumentNumber");
+				booking.Date = reader.GetDateTime("Date");
+				booking.Year = reader.GetInt32("Year");
+				booking.Subject = reader.GetString("Subject");
+				booking.ID_Sender = reader.GetInt32("ID_Sender");
+				booking.EntryCode = reader.GetString("EntryCode");
 			}
 
 			reader.Close();
@@ -112,20 +113,21 @@ namespace DAL
 
 			connection.Open();
 
-			string sql = "SELECT * FROM ArchiveBooking WHERE EntryCode='" + entryCode + "'";
+			string sql = "SELECT * FROM ArchiveBooking WHERE EntryCode = @parameter";
 			command = new SqlCommand(sql, connection);
+			command.Parameters.AddWithValue("@parameter", entryCode);
 			reader = command.ExecuteReader();
 
 			while (reader.Read())
 			{
-				booking.ID_ArchiveBooking = int.Parse(reader.GetInt32(0).ToString());
-				booking.ID_ArchiveCode = int.Parse(reader.GetInt32(1).ToString());
-				booking.DocumentNumber = reader.GetString(2);
-				booking.Date = reader.GetDateTime(3).Date;
-				booking.Year = int.Parse(reader.GetInt32(4).ToString());
-				booking.Subject = reader.GetString(5);
-				booking.ID_Sender = int.Parse(reader.GetInt32(6).ToString());
-				booking.EntryCode = reader.GetString(7);
+				booking.ID_ArchiveBooking = reader.GetInt32("ID_ArchiveBooking");
+				booking.ID_ArchiveCode = reader.GetInt32("ID_ArchiveCode");
+				booking.DocumentNumber = reader.GetString("DocumentNumber");
+				booking.Date = reader.GetDateTime("Date");
+				booking.Year = reader.GetInt32("Year");
+				booking.Subject = reader.GetString("Subject");
+				booking.ID_Sender = reader.GetInt32("ID_Sender");
+				booking.EntryCode = reader.GetString("EntryCode");
 			}
 
 			reader.Close();
@@ -149,14 +151,14 @@ namespace DAL
 			{
 				ArchiveBooking booking = new ArchiveBooking();
 
-				booking.ID_ArchiveBooking = int.Parse(reader.GetInt32(0).ToString());
-				booking.ID_ArchiveCode = int.Parse(reader.GetInt32(1).ToString());
-				booking.DocumentNumber = reader.GetString(2);
-				booking.Date = reader.GetDateTime(3).Date;
-				booking.Year = int.Parse(reader.GetInt32(4).ToString());
-				booking.Subject = reader.GetString(5);
-				booking.ID_Sender = int.Parse(reader.GetInt32(6).ToString());
-				booking.EntryCode = reader.GetString(7);
+				booking.ID_ArchiveBooking = reader.GetInt32("ID_ArchiveBooking");
+				booking.ID_ArchiveCode = reader.GetInt32("ID_ArchiveCode");
+				booking.DocumentNumber = reader.GetString("DocumentNumber");
+				booking.Date = reader.GetDateTime("Date");
+				booking.Year = reader.GetInt32("Year");
+				booking.Subject = reader.GetString("Subject");
+				booking.ID_Sender = reader.GetInt32("ID_Sender");
+				booking.EntryCode = reader.GetString("EntryCode");
 
 				result.Add(booking);
 			}
@@ -182,14 +184,14 @@ namespace DAL
 			{
 				ArchiveBooking booking = new ArchiveBooking();
 
-				booking.ID_ArchiveBooking = int.Parse(reader.GetInt32(0).ToString());
-				booking.ID_ArchiveCode = int.Parse(reader.GetInt32(1).ToString());
-				booking.DocumentNumber = reader.GetString(2);
-				booking.Date = reader.GetDateTime(3).Date;
-				booking.Year = int.Parse(reader.GetInt32(4).ToString());
-				booking.Subject = reader.GetString(5);
-				booking.ID_Sender = int.Parse(reader.GetInt32(6).ToString());
-				booking.EntryCode = reader.GetString(7);
+				booking.ID_ArchiveBooking = reader.GetInt32("ID_ArchiveBooking");
+				booking.ID_ArchiveCode = reader.GetInt32("ID_ArchiveCode");
+				booking.DocumentNumber = reader.GetString("DocumentNumber");
+				booking.Date = reader.GetDateTime("Date");
+				booking.Year = reader.GetInt32("Year");
+				booking.Subject = reader.GetString("Subject");
+				booking.ID_Sender = reader.GetInt32("ID_Sender");
+				booking.EntryCode = reader.GetString("EntryCode");
 
 				result.Add(booking);
 			}
@@ -215,14 +217,14 @@ namespace DAL
 			{
 				ArchiveBooking booking = new ArchiveBooking();
 
-				booking.ID_ArchiveBooking = int.Parse(reader.GetInt32(0).ToString());
-				booking.ID_ArchiveCode = int.Parse(reader.GetInt32(1).ToString());
-				booking.DocumentNumber = reader.GetString(2);
-				booking.Date = reader.GetDateTime(3).Date;
-				booking.Year = int.Parse(reader.GetInt32(4).ToString());
-				booking.Subject = reader.GetString(5);
-				booking.ID_Sender = int.Parse(reader.GetInt32(6).ToString());
-				booking.EntryCode = reader.GetString(7);
+				booking.ID_ArchiveBooking = reader.GetInt32("ID_ArchiveBooking");
+				booking.ID_ArchiveCode = reader.GetInt32("ID_ArchiveCode");
+				booking.DocumentNumber = reader.GetString("DocumentNumber");
+				booking.Date = reader.GetDateTime("Date");
+				booking.Year = reader.GetInt32("Year");
+				booking.Subject = reader.GetString("Subject");
+				booking.ID_Sender = reader.GetInt32("ID_Sender");
+				booking.EntryCode = reader.GetString("EntryCode");
 
 				result.Add(booking);
 			}
@@ -256,14 +258,14 @@ namespace DAL
 			{
 				ArchiveBooking booking = new ArchiveBooking();
 
-				booking.ID_ArchiveBooking = int.Parse(reader.GetInt32(0).ToString());
-				booking.ID_ArchiveCode = int.Parse(reader.GetInt32(1).ToString());
-				booking.DocumentNumber = reader.GetString(2);
-				booking.Date = reader.GetDateTime(3).Date;
-				booking.Year = int.Parse(reader.GetInt32(4).ToString());
-				booking.Subject = reader.GetString(5);
-				booking.ID_Sender = int.Parse(reader.GetInt32(6).ToString());
-				booking.EntryCode = reader.GetString(7);
+				booking.ID_ArchiveBooking = reader.GetInt32("ID_ArchiveBooking");
+				booking.ID_ArchiveCode = reader.GetInt32("ID_ArchiveCode");
+				booking.DocumentNumber = reader.GetString("DocumentNumber");
+				booking.Date = reader.GetDateTime("Date");
+				booking.Year = reader.GetInt32("Year");
+				booking.Subject = reader.GetString("Subject");
+				booking.ID_Sender = reader.GetInt32("ID_Sender");
+				booking.EntryCode = reader.GetString("EntryCode");
 
 				result.Add(booking);
 			}
@@ -298,14 +300,14 @@ namespace DAL
 			{
 				ArchiveBooking booking = new ArchiveBooking();
 
-				booking.ID_ArchiveBooking = int.Parse(reader.GetInt32(0).ToString());
-				booking.ID_ArchiveCode = int.Parse(reader.GetInt32(1).ToString());
-				booking.DocumentNumber = reader.GetString(2);
-				booking.Date = reader.GetDateTime(3).Date;
-				booking.Year = int.Parse(reader.GetInt32(4).ToString());
-				booking.Subject = reader.GetString(5);
-				booking.ID_Sender = int.Parse(reader.GetInt32(6).ToString());
-				booking.EntryCode = reader.GetString(7);
+				booking.ID_ArchiveBooking = reader.GetInt32("ID_ArchiveBooking");
+				booking.ID_ArchiveCode = reader.GetInt32("ID_ArchiveCode");
+				booking.DocumentNumber = reader.GetString("DocumentNumber");
+				booking.Date = reader.GetDateTime("Date");
+				booking.Year = reader.GetInt32("Year");
+				booking.Subject = reader.GetString("Subject");
+				booking.ID_Sender = reader.GetInt32("ID_Sender");
+				booking.EntryCode = reader.GetString("EntryCode");
 
 				result.Add(booking);
 			}
@@ -392,7 +394,7 @@ namespace DAL
 			connection.Open();
 			adapter = new SqlDataAdapter();
 
-			string sql = "DELETE FROM ArchiveBooking WHERE Year=" + year;
+			string sql = "DELETE FROM ArchiveBooking WHERE Year= :year" + year;
 
 			command = new SqlCommand(sql, connection);
 			adapter.DeleteCommand = command;

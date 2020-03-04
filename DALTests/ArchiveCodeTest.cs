@@ -9,15 +9,15 @@ namespace DALTests
 	public class ArchiveCodeTest
 	{
 		[Fact]
-		public void Test1() 
+		public void GetArchiveCodeByID() 
         {
             //Arrange
-            var archiveCodeService = new ArchiveCodeService();
+            var archiveCodeEngine = new ArchiveCodeEngine();
             const string Code = "01";
             const string Name = "Основање, организација и развој";
 
             //Act
-            ArchiveCode code = archiveCodeService.GetArchiveCodeByID(1);
+            ArchiveCode code = archiveCodeEngine.GetArchiveCodeByID(1);
             bool isValid = true;
             if (Code != code.Code || Name != code.Name)
                 isValid = false;
@@ -27,15 +27,15 @@ namespace DALTests
         }
 
         [Fact]
-        public void Test2() 
+        public void GetArchiveCodeByCode() 
         {
             //Arrange
-            var archiveCodeService = new ArchiveCodeService();
+            var archiveCodeEngine = new ArchiveCodeEngine();
             const string Code = "01";
             const string Name = "Основање, организација и развој";
 
             //Act
-            ArchiveCode code = archiveCodeService.GetArchiveCodeByCode(Code);
+            ArchiveCode code = archiveCodeEngine.GetArchiveCodeByCode(Code);
             bool isValid = true;
             if (Code != code.Code || Name != code.Name)
                 isValid = false;
@@ -45,17 +45,17 @@ namespace DALTests
         }
 
         [Fact]
-        public void Test3() 
+        public void InsertArchiveCode() 
         {
             //Arrange
-            var archiveCodeService = new ArchiveCodeService();
+            var archiveCodeEngine = new ArchiveCodeEngine();
             const string Code = "09";
             const string Name = "test9";
 
             //Act
             ArchiveCode code = new ArchiveCode(100, Code, Name);
-            archiveCodeService.InsertArchiveCode(code);
-            code = archiveCodeService.GetArchiveCodeByCode(Code);
+            archiveCodeEngine.InsertArchiveCode(code);
+            code = archiveCodeEngine.GetArchiveCodeByCode(Code);
             bool isValid = true;
             if (Code != code.Code || Name != code.Name)
                 isValid = false;
@@ -65,39 +65,39 @@ namespace DALTests
         }
 
         [Fact]
-        public void Test4() 
+        public void UpdateArchiveCodeByCode() 
         {
             //Arrange
-            var archiveCodeService = new ArchiveCodeService();
+            var archiveCodeEngine = new ArchiveCodeEngine();
             const string Code = "09";
             const string Name = "updated";
 
             //Act
             ArchiveCode code = new ArchiveCode(100, Code, Name);
-            archiveCodeService.UpdateArchiveCodeByCode(Code, code);
-            code = archiveCodeService.GetArchiveCodeByCode(Code);
+            archiveCodeEngine.UpdateArchiveCodeByCode(Code, code);
+            code = archiveCodeEngine.GetArchiveCodeByCode(Code);
             bool isValid = true;
             if (code.Code != Code || code.Name != Name)
                 isValid = false;
 
-            archiveCodeService.DeleteArchiveCodeByCode(Code);
+            archiveCodeEngine.DeleteArchiveCodeByCode(Code);
             //Assert
             Assert.True(isValid, "The Archive Code with Code=09 is not valid");
         }
 
         [Fact]
-        public void Test5() 
+        public void DeleteArchiveCodeByCode() 
         {
             //Arrange
-            var archiveCodeService = new ArchiveCodeService();
+            var archiveCodeEngine = new ArchiveCodeEngine();
             const string Code = "09";
             const string Name = "test9";
 
             //Act
             ArchiveCode code = new ArchiveCode(100, Code, Name);
-            archiveCodeService.InsertArchiveCode(code);
-            archiveCodeService.DeleteArchiveCodeByCode(Code);
-            code = archiveCodeService.GetArchiveCodeByCode(Code);
+            archiveCodeEngine.InsertArchiveCode(code);
+            archiveCodeEngine.DeleteArchiveCodeByCode(Code);
+            code = archiveCodeEngine.GetArchiveCodeByCode(Code);
             bool isValid = true;
             if (code.Code != null || code.Name != null)
                 isValid = false;
@@ -109,10 +109,10 @@ namespace DALTests
         }
 
         [Fact]
-        public void Test6() 
+        public void InsertDeleteArchiveCodes() 
         {
             //Arrange
-            var archiveCodeService = new ArchiveCodeService();
+            var archiveCodeEngine = new ArchiveCodeEngine();
             const string Code1 = "09";
             const string Name1 = "test9";
             const string Code2 = "0901";
@@ -131,14 +131,14 @@ namespace DALTests
             archiveCodes.Add(code1);
             archiveCodes.Add(code2);
             archiveCodes.Add(code3);
-            
-            archiveCodeService.InsertArchiveCodes(archiveCodes);
+
+            archiveCodeEngine.InsertArchiveCodes(archiveCodes);
 
             codes.Add(Code1);
             codes.Add(Code2);
             codes.Add(Code3);
 
-            result = archiveCodeService.GetArchiveCodesByCodes(codes);
+            result = archiveCodeEngine.GetArchiveCodesByCodes(codes);
 
             bool isValid = true;
             foreach(ArchiveCode code in result)
@@ -147,7 +147,7 @@ namespace DALTests
                     isValid = false;
             }
 
-            archiveCodeService.DeleteArchiveCodesByCodes(codes);
+            archiveCodeEngine.DeleteArchiveCodesByCodes(codes);
 
             //Assert
             Assert.True(isValid, "Not valid");

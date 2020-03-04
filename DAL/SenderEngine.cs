@@ -1,14 +1,15 @@
 ﻿using Models;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Text;
 
 namespace DAL
 {
-	public class SenderService
+	public class SenderEngine
 	{
-		public SenderService()
+		public SenderEngine()
 		{
 			connection = new SqlConnection(connectionString);
 		}
@@ -27,36 +28,7 @@ namespace DAL
 
 			while (reader.Read())
 			{
-				Sender sender = new Sender(int.Parse(reader.GetInt32(0).ToString()), reader.GetString(1));
-
-				result.Add(sender);
-			}
-
-			reader.Close();
-			command.Dispose();
-			connection.Close();
-
-			return result;
-		}
-
-		public List<Sender> GetSendersByNames(List<string> names)
-		{
-			List<Sender> result = new List<Sender>();
-
-			connection.Open();
-
-			StringBuilder sql = new StringBuilder("SELECT * FROM Sender WHERE SenderName IN (");
-			for (int i = 0; i < names.Count; i++)
-			{
-				sql.Append("'" + names[i] + "', ");
-			}
-			string sqlCommand = sql.ToString().Substring(0, sql.ToString().Length - 2) + ")";
-			command = new SqlCommand(sqlCommand, connection);
-			reader = command.ExecuteReader();
-
-			while (reader.Read())
-			{
-				Sender sender = new Sender(int.Parse(reader.GetInt32(0).ToString()), reader.GetString(1));
+				Sender sender = new Sender(reader.GetInt32("ID_Sender"), reader.GetString("SenderName"));
 
 				result.Add(sender);
 			}
@@ -74,14 +46,15 @@ namespace DAL
 
 			connection.Open();
 
-			string sql = "SELECT * FROM Sender WHERE ID_Sender=" + id;
+			string sql = "SELECT * FROM Sender WHERE ID_Sender = @id";
 			command = new SqlCommand(sql, connection);
+			command.Parameters.AddWithValue("@id", id);
 			reader = command.ExecuteReader();
 
 			while (reader.Read())
 			{
-				result.ID_Sender = int.Parse(reader.GetInt32(0).ToString());
-				result.SenderName = reader.GetString(1);
+				result.ID_Sender = reader.GetInt32("ID_Sender");
+				result.SenderName = reader.GetString("SenderName");
 			}
 
 			reader.Close();
@@ -97,14 +70,15 @@ namespace DAL
 
 			connection.Open();
 
-			string sql = "SELECT * FROM Sender WHERE SenderName='" + name + "'";
+			string sql = "SELECT * FROM Sender WHERE SenderName = :@name";
 			command = new SqlCommand(sql, connection);
+			command.Parameters.AddWithValue("@name", name);
 			reader = command.ExecuteReader();
 
 			while (reader.Read())
 			{
-				result.ID_Sender = int.Parse(reader.GetInt32(0).ToString());
-				result.SenderName = reader.GetString(1);
+				result.ID_Sender = reader.GetInt32("ID_Sender");
+				result.SenderName = reader.GetString("SenderName");
 			}
 
 			reader.Close();
@@ -119,8 +93,9 @@ namespace DAL
 			connection.Open();
 			adapter = new SqlDataAdapter();
 
-			string sql = "INSERT INTO Sender(SenderName) VALUES('" + sender.SenderName + "')";
+			string sql = "INSERT INTO Sender(SenderName) VALUES(@name)";
 			command = new SqlCommand(sql, connection);
+			command.Parameters.AddWithValue("@name", sender.SenderName);
 			adapter.InsertCommand = command;
 			adapter.InsertCommand.ExecuteNonQuery();
 
@@ -130,22 +105,11 @@ namespace DAL
 
 		public void InsertSenders(List<Sender> senders)
 		{
-			connection.Open();
-			adapter = new SqlDataAdapter();
-
-			StringBuilder sql = new StringBuilder("INSERT INTO Sender(SenderName) VALUES");
 
 			foreach (Sender sender in senders)
 			{
-				sql.Append("('" + sender.SenderName + "'),");
+				InsertSender(sender);
 			}
-
-			command = new SqlCommand(sql.ToString().Substring(0, sql.ToString().Length - 1), connection);
-			adapter.InsertCommand = command;
-			adapter.InsertCommand.ExecuteNonQuery();
-
-			command.Dispose();
-			connection.Close();
 		}
 
 		public void DeleteSenderById(int id)
@@ -153,9 +117,10 @@ namespace DAL
 			connection.Open();
 			adapter = new SqlDataAdapter();
 
-			string sql = "DELETE FROM Sender WHERE ID_Sender=" + id;
+			string sql = "DELETE FROM Sender WHERE ID_Sender = @id";
 
 			command = new SqlCommand(sql, connection);
+			command.Parameters.AddWithValue("@id", id);
 			adapter.DeleteCommand = command;
 			adapter.DeleteCommand.ExecuteNonQuery();
 
@@ -168,9 +133,10 @@ namespace DAL
 			connection.Open();
 			adapter = new SqlDataAdapter();
 
-			string sql = "DELETE FROM Sender WHERE SenderName='" + name + "'";
+			string sql = "DELETE FROM Sender WHERE SenderName = @name";
 
 			command = new SqlCommand(sql, connection);
+			command.Parameters.AddWithValue("@name", name);
 			adapter.DeleteCommand = command;
 			adapter.DeleteCommand.ExecuteNonQuery();
 
@@ -180,24 +146,10 @@ namespace DAL
 
 		public void DeleteSendersByNames(List<string> names)
 		{
-			connection.Open();
-			adapter = new SqlDataAdapter();
-
-			StringBuilder sql = new StringBuilder("DELETE FROM Sender WHERE SenderName IN (");
-
-			for (int i = 0; i < names.Count; i++)
+			foreach(string name in names)
 			{
-				sql.Append("'" + names[i] + "', ");
+				DeleteSenderByName(name);
 			}
-
-			string sqlCommand = sql.ToString().Substring(0, sql.ToString().Length - 2) + ")";
-
-			command = new SqlCommand(sqlCommand, connection);
-			adapter.DeleteCommand = command;
-			adapter.DeleteCommand.ExecuteNonQuery();
-
-			command.Dispose();
-			connection.Close();
 		}
 
 		public void UpdateSenderById(int id, Sender sender)
@@ -205,9 +157,11 @@ namespace DAL
 			connection.Open();
 			adapter = new SqlDataAdapter();
 
-			string sql = "UPDATE Sender SET SenderName='" + sender.SenderName + "' WHERE ID_Sender=" + id;
+			string sql = "UPDATE Sender SET SenderName = @name WHERE ID_Sender = @id";
 
 			command = new SqlCommand(sql, connection);
+			command.Parameters.AddWithValue("@name", sender.SenderName);
+			command.Parameters.AddWithValue("@id", id);
 			adapter.UpdateCommand = command;
 			adapter.UpdateCommand.ExecuteNonQuery();
 
@@ -220,9 +174,11 @@ namespace DAL
 			connection.Open();
 			adapter = new SqlDataAdapter();
 
-			string sql = "UPDATE Sender SET SenderName='" + sender.SenderName + "' WHERE SenderName='" + name + "'";
+			string sql = "UPDATE Sender SET SenderName = @newname WHERE SenderName = @name";
 
 			command = new SqlCommand(sql, connection);
+			command.Parameters.AddWithValue("@newname", sender.SenderName);
+			command.Parameters.AddWithValue("@name", name);
 			adapter.UpdateCommand = command;
 			adapter.UpdateCommand.ExecuteNonQuery();
 

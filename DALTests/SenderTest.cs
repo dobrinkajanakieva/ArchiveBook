@@ -10,14 +10,14 @@ namespace DALTests
 	public class SenderTest
 	{
         [Fact]
-        public void Test1() 
+        public void GetSenderByID() 
         {
             //Arrange
-            var senderService = new SenderService();
+            var senderEngine = new SenderEngine();
             const string SenderName = "gfresf";
 
             //Act
-            Sender sender = senderService.GetSenderByID(1);
+            Sender sender = senderEngine.GetSenderByID(1);
             bool isValid = true;
             if (SenderName != sender.SenderName)
                 isValid = false;
@@ -27,14 +27,14 @@ namespace DALTests
         }
 
         [Fact]
-        public void Test2() 
+        public void GetSenderByName() 
         {
             //Arrange
-            var senderService = new SenderService();
+            var senderEngine = new SenderEngine();
             const string Name = "gfdshgt";
 
             //Act
-            Sender sender = senderService.GetSenderByName(Name);
+            Sender sender = senderEngine.GetSenderByName(Name);
             bool isValid = true;
             if (Name != sender.SenderName)
                 isValid = false;
@@ -44,60 +44,60 @@ namespace DALTests
         }
 
         [Fact]
-        public void Test3() 
+        public void InsertSender() 
         {
             //Arrange
-            var senderService = new SenderService();
+            var senderEngine = new SenderEngine();
             const string Name = "novo";
 
             //Act
             Sender sender = new Sender(100, Name);
-            senderService.InsertSender(sender);
-            sender = senderService.GetSenderByName(Name);
+            senderEngine.InsertSender(sender);
+            sender = senderEngine.GetSenderByName(Name);
             bool isValid = true;
             if (Name != sender.SenderName)
                 isValid = false;
 
-            senderService.DeleteSenderByName(Name);
+            senderEngine.DeleteSenderByName(Name);
             //Assert
             Assert.True(isValid, "The Sender with Name=novo is not valid");
         }
 
         [Fact]
-        public void Test4() 
+        public void UpdateSenderByName() 
         {
             //Arrange
-            var senderService = new SenderService();
+            var senderEngine = new SenderEngine();
             const string Name = "updated";
 
             //Act
             Sender sender = new Sender(100, "new");
-            senderService.InsertSender(sender);
+            senderEngine.InsertSender(sender);
             sender = new Sender(100, Name);
-            senderService.UpdateSenderByName("new", sender);
-            sender = senderService.GetSenderByName(Name);
+            senderEngine.UpdateSenderByName("new", sender);
+            sender = senderEngine.GetSenderByName(Name);
             bool isValid = true;
             if (Name != sender.SenderName)
                 isValid = false;
 
-            senderService.DeleteSenderByName(Name);
+            senderEngine.DeleteSenderByName(Name);
             //Assert
             Assert.True(isValid, "The Sender with Name=new is not valid");
         }
 
         [Fact]
-        public void Test5() 
+        public void DeleteSenderByName() 
         {
             //Arrange
-            var senderService = new SenderService();
+            var senderEngine = new SenderEngine();
             const string Name = "test9";
 
             //Act
             Sender sender = new Sender(100, Name);
-            senderService.InsertSender(sender);
-            senderService.DeleteSenderByName(Name);
+            senderEngine.InsertSender(sender);
+            senderEngine.DeleteSenderByName(Name);
             sender = null;
-            sender = senderService.GetSenderByName(Name);
+            sender = senderEngine.GetSenderByName(Name);
             bool isValid = true;
             if (sender.SenderName != null)
                 isValid = false;
@@ -109,10 +109,10 @@ namespace DALTests
         }
 
         [Fact]
-        public void Test6()
+        public void InsertDeleteSenders()
         {
             //Arrange
-            var senderService = new SenderService();
+            var senderEngine = new SenderEngine();
             const string Name1 = "test9";
             const string Name2 = "test91";
             const string Name3 = "test92";
@@ -129,13 +129,13 @@ namespace DALTests
             senders.Add(sender2);
             senders.Add(sender3);
 
-            senderService.InsertSenders(senders);
+            senderEngine.InsertSenders(senders);
 
             names.Add(Name1);
             names.Add(Name2);
             names.Add(Name3);
 
-            result = senderService.GetSendersByNames(names);
+            result = senderEngine.GetSendersByNames(names);
 
             bool isValid = true;
             foreach (Sender sender in result)
@@ -144,7 +144,7 @@ namespace DALTests
                     isValid = false;
             }
 
-            senderService.DeleteSendersByNames(names);
+            senderEngine.DeleteSendersByNames(names);
 
             //Assert
             Assert.True(isValid, "Not valid");
