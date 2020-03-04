@@ -238,7 +238,7 @@ namespace DALTests
 
             //Act
             ArchiveBooking booking = new ArchiveBooking(ID, ID_ArchiveCode, DocumentNumber, Date.Date, Year, Subject, ID_Sender, EntryCode);
-            archiveBookingEngine.UpdateArchiveBookingByID(73, booking);
+            archiveBookingEngine.UpdateArchiveBookingByID(70, booking);
             booking = null;
             booking = archiveBookingEngine.GetArchiveBookingByID(73);
 
