@@ -1,16 +1,16 @@
-﻿using Models;
+﻿using DAL_Interfaces;
+using Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Text;
 
-namespace DAL
+namespace DAL_SQLServer
 {
-	public class ArchiveCodeEngine : DBConnection
+	public class ArchiveCodeEngine : DBClass, IArchiveCodeEngine
 	{
-		public ArchiveCodeEngine()  //(string connectionString)
-			: base() { }  // (connectionString) { }
+		public ArchiveCodeEngine()  
+			: base() { }  
 
 		#region Functions
 
@@ -18,37 +18,25 @@ namespace DAL
 		{
 			List<ArchiveCode> result = new List<ArchiveCode>();
 
-			try
+			using (connection = new SqlConnection(connectionString))
 			{
 				connection.Open();
 
 				string sql = "SELECT * FROM ArchiveCode";
 				command = new SqlCommand(sql, connection);
-				reader = command.ExecuteReader();
 
-				while (reader.Read())
+				using (reader = command.ExecuteReader())
 				{
-					ArchiveCode code = new ArchiveCode(reader.GetInt32("ID_ArchiveCode"), reader.GetString("Code"), reader.GetString("Name"));
+					while (reader.Read())
+					{
+						ArchiveCode code = new ArchiveCode(reader.GetInt32("ID_ArchiveCode"), reader.GetString("Code"), reader.GetString("Name"));
 
-					result.Add(code);
+						result.Add(code);
+					}
 				}
-
 				reader.Close();
 				command.Dispose();
 				connection.Close();
-			}
-			catch (SqlException ex)
-			{
-				StringBuilder errorMessages = new StringBuilder();
-				for (int i = 0; i < ex.Errors.Count; i++)
-				{
-					errorMessages.Append("Index #" + i + "\n" +
-						"Message: " + ex.Errors[i].Message + "\n" +
-						"LineNumber: " + ex.Errors[i].LineNumber + "\n" +
-						"Source: " + ex.Errors[i].Source + "\n" +
-						"Procedure: " + ex.Errors[i].Procedure + "\n");
-				}
-				Console.WriteLine(errorMessages.ToString());
 			}
 
 			return result;
@@ -56,57 +44,46 @@ namespace DAL
 
 		public List<ArchiveCode> GetArchiveCodesByCodes(List<string> codes)
 		{
+			if (codes.Count == 0)
+				throw new IndexOutOfRangeException("No codes.");
+
 			List<ArchiveCode> result = new List<ArchiveCode>();
-			try
+
+			foreach (string code in codes)
 			{
-				foreach (string code in codes)
-				{
-					result.Add(GetArchiveCodeByCode(code));
-				}
+				result.Add(GetArchiveCodeByCode(code));
 			}
-			catch (Exception ex)
-			{
-				Console.WriteLine(ex.Message.ToString());
-			}
+
 			return result;
 		}
 
 		public ArchiveCode GetArchiveCodeByID(int id)
 		{
+			if (id == 0)
+				throw new IndexOutOfRangeException("No such code.");
+			
 			ArchiveCode result = new ArchiveCode();
 
-			try
+			using (connection = new SqlConnection(connectionString))
 			{
 				connection.Open();
 
 				string sql = "SELECT * FROM ArchiveCode WHERE ID_ArchiveCode = @id";
 				command = new SqlCommand(sql, connection);
 				command.Parameters.AddWithValue("@id", id);
-				reader = command.ExecuteReader();
 
-				while (reader.Read())
+				using (reader = command.ExecuteReader())
 				{
-					result.ID_ArchiveCode = reader.GetInt32("ID_ArchiveCode");
-					result.Code = reader.GetString("Code");
-					result.Name = reader.GetString("Name");
+					while (reader.Read())
+					{
+						result.ID_ArchiveCode = reader.GetInt32("ID_ArchiveCode");
+						result.Code = reader.GetString("Code");
+						result.Name = reader.GetString("Name");
+					}
 				}
-
 				reader.Close();
 				command.Dispose();
 				connection.Close();
-			}
-			catch (SqlException ex)
-			{
-				StringBuilder errorMessages = new StringBuilder();
-				for (int i = 0; i < ex.Errors.Count; i++)
-				{
-					errorMessages.Append("Index #" + i + "\n" +
-						"Message: " + ex.Errors[i].Message + "\n" +
-						"LineNumber: " + ex.Errors[i].LineNumber + "\n" +
-						"Source: " + ex.Errors[i].Source + "\n" +
-						"Procedure: " + ex.Errors[i].Procedure + "\n");
-				}
-				Console.WriteLine(errorMessages.ToString());
 			}
 
 			return result;
@@ -114,40 +91,31 @@ namespace DAL
 
 		public ArchiveCode GetArchiveCodeByCode(string code)
 		{
+			if (code == null)
+				throw new IndexOutOfRangeException("No such code.");
+
 			ArchiveCode result = new ArchiveCode();
 
-			try
+			using (connection = new SqlConnection(connectionString))
 			{
 				connection.Open();
 
 				string sql = "SELECT * FROM ArchiveCode WHERE Code = @code";
 				command = new SqlCommand(sql, connection);
 				command.Parameters.AddWithValue("@code", code);
-				reader = command.ExecuteReader();
 
-				while (reader.Read())
+				using (reader = command.ExecuteReader())
 				{
-					result.ID_ArchiveCode = reader.GetInt32("ID_ArchiveCode");
-					result.Code = reader.GetString("Code");
-					result.Name = reader.GetString("Name");
+					while (reader.Read())
+					{
+						result.ID_ArchiveCode = reader.GetInt32("ID_ArchiveCode");
+						result.Code = reader.GetString("Code");
+						result.Name = reader.GetString("Name");
+					}
 				}
-
 				reader.Close();
 				command.Dispose();
 				connection.Close();
-			}
-			catch (SqlException ex)
-			{
-				StringBuilder errorMessages = new StringBuilder();
-				for (int i = 0; i < ex.Errors.Count; i++)
-				{
-					errorMessages.Append("Index #" + i + "\n" +
-						"Message: " + ex.Errors[i].Message + "\n" +
-						"LineNumber: " + ex.Errors[i].LineNumber + "\n" +
-						"Source: " + ex.Errors[i].Source + "\n" +
-						"Procedure: " + ex.Errors[i].Procedure + "\n");
-				}
-				Console.WriteLine(errorMessages.ToString());
 			}
 
 			return result;
@@ -155,195 +123,147 @@ namespace DAL
 
 		public void InsertArchiveCode(ArchiveCode code)
 		{
-			try
+			if (code.ID_ArchiveCode == 0)
+				throw new IndexOutOfRangeException("Empty code.");
+
+			using (connection = new SqlConnection(connectionString))
 			{
 				connection.Open();
-				adapter = new SqlDataAdapter();
 
-				string sql = "INSERT INTO ArchiveCode(Code, Name) VALUES(@code, @name)";
-				command = new SqlCommand(sql, connection);
-				command.Parameters.AddWithValue("@code", code.Code);
-				command.Parameters.AddWithValue("@name", code.Name);
-				adapter.InsertCommand = command;
-				adapter.InsertCommand.ExecuteNonQuery();
-
+				using (adapter = new SqlDataAdapter())
+				{
+					string sql = "INSERT INTO ArchiveCode(Code, Name) VALUES(@code, @name)";
+					command = new SqlCommand(sql, connection);
+					command.Parameters.AddWithValue("@code", code.Code);
+					command.Parameters.AddWithValue("@name", code.Name);
+					adapter.InsertCommand = command;
+					adapter.InsertCommand.ExecuteNonQuery();
+				}
 				command.Dispose();
 				connection.Close();
-			}
-			catch (SqlException ex)
-			{
-				StringBuilder errorMessages = new StringBuilder();
-				for (int i = 0; i < ex.Errors.Count; i++)
-				{
-					errorMessages.Append("Index #" + i + "\n" +
-						"Message: " + ex.Errors[i].Message + "\n" +
-						"LineNumber: " + ex.Errors[i].LineNumber + "\n" +
-						"Source: " + ex.Errors[i].Source + "\n" +
-						"Procedure: " + ex.Errors[i].Procedure + "\n");
-				}
-				Console.WriteLine(errorMessages.ToString());
 			}
 		}
 
 		public void InsertArchiveCodes(List<ArchiveCode> codes)
 		{
-			try
+			if (codes.Count == 0)
+				throw new IndexOutOfRangeException("No codes.");
+
+			foreach (ArchiveCode code in codes)
 			{
-				foreach (ArchiveCode code in codes)
-				{
-					InsertArchiveCode(code);
-				}
-			}
-			catch (Exception ex)
-			{
-				Console.WriteLine(ex.Message.ToString());
+				InsertArchiveCode(code);
 			}
 		}
 
 		public void DeleteArchiveCodeById(int id)
 		{
-			try
+			if (id == 0)
+				throw new IndexOutOfRangeException("No such code.");
+
+			using (connection = new SqlConnection(connectionString))
 			{
 				connection.Open();
-				adapter = new SqlDataAdapter();
 
-				string sql = "DELETE FROM ArchiveCode WHERE ID_ArchiveCode = @id";
+				using (adapter = new SqlDataAdapter())
+				{
+					string sql = "DELETE FROM ArchiveCode WHERE ID_ArchiveCode = @id";
 
-				command = new SqlCommand(sql, connection);
-				command.Parameters.AddWithValue("@id", id);
-				adapter.DeleteCommand = command;
-				adapter.DeleteCommand.ExecuteNonQuery();
-
+					command = new SqlCommand(sql, connection);
+					command.Parameters.AddWithValue("@id", id);
+					adapter.DeleteCommand = command;
+					adapter.DeleteCommand.ExecuteNonQuery();
+				}
 				command.Dispose();
 				connection.Close();
-			}
-			catch (SqlException ex)
-			{
-				StringBuilder errorMessages = new StringBuilder();
-				for (int i = 0; i < ex.Errors.Count; i++)
-				{
-					errorMessages.Append("Index #" + i + "\n" +
-						"Message: " + ex.Errors[i].Message + "\n" +
-						"LineNumber: " + ex.Errors[i].LineNumber + "\n" +
-						"Source: " + ex.Errors[i].Source + "\n" +
-						"Procedure: " + ex.Errors[i].Procedure + "\n");
-				}
-				Console.WriteLine(errorMessages.ToString());
 			}
 		}
 
 		public void DeleteArchiveCodeByCode(string code)
 		{
-			try
+			if (code == null)
+				throw new IndexOutOfRangeException("No such code.");
+
+			using (connection = new SqlConnection(connectionString))
 			{
 				connection.Open();
-				adapter = new SqlDataAdapter();
 
-				string sql = "DELETE FROM ArchiveCode WHERE Code = @code";
+				using (adapter = new SqlDataAdapter())
+				{
+					string sql = "DELETE FROM ArchiveCode WHERE Code = @code";
 
-				command = new SqlCommand(sql, connection);
-				command.Parameters.AddWithValue("@code", code);
-				adapter.DeleteCommand = command;
-				adapter.DeleteCommand.ExecuteNonQuery();
-
+					command = new SqlCommand(sql, connection);
+					command.Parameters.AddWithValue("@code", code);
+					adapter.DeleteCommand = command;
+					adapter.DeleteCommand.ExecuteNonQuery();
+				}
 				command.Dispose();
 				connection.Close();
-			}
-			catch (SqlException ex)
-			{
-				StringBuilder errorMessages = new StringBuilder();
-				for (int i = 0; i < ex.Errors.Count; i++)
-				{
-					errorMessages.Append("Index #" + i + "\n" +
-						"Message: " + ex.Errors[i].Message + "\n" +
-						"LineNumber: " + ex.Errors[i].LineNumber + "\n" +
-						"Source: " + ex.Errors[i].Source + "\n" +
-						"Procedure: " + ex.Errors[i].Procedure + "\n");
-				}
-				Console.WriteLine(errorMessages.ToString());
 			}
 		}
 
 		public void DeleteArchiveCodesByCodes(List<string> codes)
 		{
-			try
+			if (codes.Count == 0)
+				throw new IndexOutOfRangeException("No codes.");
+
+			foreach (string code in codes)
 			{
-				foreach (string code in codes)
-				{
-					DeleteArchiveCodeByCode(code);
-				}
-			}
-			catch (Exception ex)
-			{
-				Console.WriteLine(ex.Message.ToString());
+				DeleteArchiveCodeByCode(code);
 			}
 		}
 
 		public void UpdateArchiveCodeByID(int id, ArchiveCode code)
 		{
-			try
+			if (id == 0)
+				throw new IndexOutOfRangeException("No such code.");
+			if (code == null)
+				throw new IndexOutOfRangeException("No codes.");
+
+			using (connection = new SqlConnection(connectionString))
 			{
 				connection.Open();
-				adapter = new SqlDataAdapter();
 
-				string sql = "UPDATE ArchiveCode SET Code = @code, Name = @name WHERE ID_ArchiveCode = @id";
+				using (adapter = new SqlDataAdapter())
+				{
+					string sql = "UPDATE ArchiveCode SET Code = @code, Name = @name WHERE ID_ArchiveCode = @id";
 
-				command = new SqlCommand(sql, connection);
-				command.Parameters.AddWithValue("@code", code.Code);
-				command.Parameters.AddWithValue("@name", code.Name);
-				command.Parameters.AddWithValue("@id", id);
-				adapter.UpdateCommand = command;
-				adapter.UpdateCommand.ExecuteNonQuery();
-
+					command = new SqlCommand(sql, connection);
+					command.Parameters.AddWithValue("@code", code.Code);
+					command.Parameters.AddWithValue("@name", code.Name);
+					command.Parameters.AddWithValue("@id", id);
+					adapter.UpdateCommand = command;
+					adapter.UpdateCommand.ExecuteNonQuery();
+				}
 				command.Dispose();
 				connection.Close();
-			}
-			catch (SqlException ex)
-			{
-				StringBuilder errorMessages = new StringBuilder();
-				for (int i = 0; i < ex.Errors.Count; i++)
-				{
-					errorMessages.Append("Index #" + i + "\n" +
-						"Message: " + ex.Errors[i].Message + "\n" +
-						"LineNumber: " + ex.Errors[i].LineNumber + "\n" +
-						"Source: " + ex.Errors[i].Source + "\n" +
-						"Procedure: " + ex.Errors[i].Procedure + "\n");
-				}
-				Console.WriteLine(errorMessages.ToString());
 			}
 		}
 
 		public void UpdateArchiveCodeByCode(string c, ArchiveCode code)
 		{
-			try
+			if (c == null)
+				throw new IndexOutOfRangeException("No such code.");
+
+			if (code == null)
+				throw new IndexOutOfRangeException("No codes.");
+
+			using (connection = new SqlConnection(connectionString))
 			{
 				connection.Open();
-				adapter = new SqlDataAdapter();
 
-				string sql = "UPDATE ArchiveCode SET Code = @code, Name = @name WHERE Code = @c";
+				using (adapter = new SqlDataAdapter())
+				{
+					string sql = "UPDATE ArchiveCode SET Code = @code, Name = @name WHERE Code = @c";
 
-				command = new SqlCommand(sql, connection);
-				command.Parameters.AddWithValue("@code", code.Code);
-				command.Parameters.AddWithValue("@name", code.Name);
-				command.Parameters.AddWithValue("@c", c);
-				adapter.UpdateCommand = command;
-				adapter.UpdateCommand.ExecuteNonQuery();
-
+					command = new SqlCommand(sql, connection);
+					command.Parameters.AddWithValue("@code", code.Code);
+					command.Parameters.AddWithValue("@name", code.Name);
+					command.Parameters.AddWithValue("@c", c);
+					adapter.UpdateCommand = command;
+					adapter.UpdateCommand.ExecuteNonQuery();
+				}
 				command.Dispose();
 				connection.Close();
-			}
-			catch (SqlException ex)
-			{
-				StringBuilder errorMessages = new StringBuilder();
-				for (int i = 0; i < ex.Errors.Count; i++)
-				{
-					errorMessages.Append("Index #" + i + "\n" +
-						"Message: " + ex.Errors[i].Message + "\n" +
-						"LineNumber: " + ex.Errors[i].LineNumber + "\n" +
-						"Source: " + ex.Errors[i].Source + "\n" +
-						"Procedure: " + ex.Errors[i].Procedure + "\n");
-				}
-				Console.WriteLine(errorMessages.ToString());
 			}
 		}
 

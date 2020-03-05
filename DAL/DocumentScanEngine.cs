@@ -1,16 +1,16 @@
-﻿using Models;
+﻿using DAL_Interfaces;
+using Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Text;
 
-namespace DAL
+namespace DAL_SQLServer
 {
-	public class DocumentScanEngine : DBConnection
+	public class DocumentScanEngine : DBClass, IDocumentScanEngine
 	{
-		public DocumentScanEngine()  //(string connectionString)
-			: base() { }  // (connectionString) { }
+		public DocumentScanEngine()  
+			: base() { }  
 
 		#region Functions
 
@@ -18,37 +18,25 @@ namespace DAL
 		{
 			List<DocumentScan> result = new List<DocumentScan>();
 
-			try
+			using (connection = new SqlConnection(connectionString))
 			{
 				connection.Open();
 
 				string sql = "SELECT * FROM DocumentScan";
 				command = new SqlCommand(sql, connection);
-				reader = command.ExecuteReader();
 
-				while (reader.Read())
+				using (reader = command.ExecuteReader())
 				{
-					DocumentScan document = new DocumentScan(reader.GetInt32("ID_DocumentScan"), reader.GetInt32("ID_ArchiveBooking"), reader.GetString("DocumentPath"));
+					while (reader.Read())
+					{
+						DocumentScan document = new DocumentScan(reader.GetInt32("ID_DocumentScan"), reader.GetInt32("ID_ArchiveBooking"), reader.GetString("DocumentPath"));
 
-					result.Add(document);
+						result.Add(document);
+					}
 				}
-
 				reader.Close();
 				command.Dispose();
 				connection.Close();
-			}
-			catch (SqlException ex)
-			{
-				StringBuilder errorMessages = new StringBuilder();
-				for (int i = 0; i < ex.Errors.Count; i++)
-				{
-					errorMessages.Append("Index #" + i + "\n" +
-						"Message: " + ex.Errors[i].Message + "\n" +
-						"LineNumber: " + ex.Errors[i].LineNumber + "\n" +
-						"Source: " + ex.Errors[i].Source + "\n" +
-						"Procedure: " + ex.Errors[i].Procedure + "\n");
-				}
-				Console.WriteLine(errorMessages.ToString());
 			}
 
 			return result;
@@ -56,40 +44,31 @@ namespace DAL
 
 		public DocumentScan GetDocumentByID(int id)
 		{
+			if (id == 0)
+				throw new IndexOutOfRangeException("No such document.");
+
 			DocumentScan result = new DocumentScan();
 
-			try
+			using (connection = new SqlConnection(connectionString))
 			{
 				connection.Open();
 
 				string sql = "SELECT * FROM DocumentScan WHERE ID_DocumentScan = @id";
 				command = new SqlCommand(sql, connection);
 				command.Parameters.AddWithValue("@id", id);
-				reader = command.ExecuteReader();
 
-				while (reader.Read())
+				using (reader = command.ExecuteReader())
 				{
-					result.ID_DocumentScan = reader.GetInt32("ID_DocumentScan");
-					result.ID_ArchiveBooking = reader.GetInt32("ID_ArchiveBooking");
-					result.DocumentPath = reader.GetString("DocumentPath");
+					while (reader.Read())
+					{
+						result.ID_DocumentScan = reader.GetInt32("ID_DocumentScan");
+						result.ID_ArchiveBooking = reader.GetInt32("ID_ArchiveBooking");
+						result.DocumentPath = reader.GetString("DocumentPath");
+					}
 				}
-
 				reader.Close();
 				command.Dispose();
 				connection.Close();
-			}
-			catch (SqlException ex)
-			{
-				StringBuilder errorMessages = new StringBuilder();
-				for (int i = 0; i < ex.Errors.Count; i++)
-				{
-					errorMessages.Append("Index #" + i + "\n" +
-						"Message: " + ex.Errors[i].Message + "\n" +
-						"LineNumber: " + ex.Errors[i].LineNumber + "\n" +
-						"Source: " + ex.Errors[i].Source + "\n" +
-						"Procedure: " + ex.Errors[i].Procedure + "\n");
-				}
-				Console.WriteLine(errorMessages.ToString());
 			}
 
 			return result;
@@ -97,40 +76,31 @@ namespace DAL
 
 		public List<DocumentScan> GetDocumentsByArchiveBooking(int id)
 		{
+			if (id == 0)
+				throw new IndexOutOfRangeException("No such document.");
+
 			List<DocumentScan> result = new List<DocumentScan>();
 
-			try
+			using (connection = new SqlConnection(connectionString))
 			{
 				connection.Open();
 
 				string sql = "SELECT * FROM DocumentScan WHERE ID_ArchiveBooking = @id";
 				command = new SqlCommand(sql, connection);
 				command.Parameters.AddWithValue("@id", id);
-				reader = command.ExecuteReader();
 
-				while (reader.Read())
+				using (reader = command.ExecuteReader())
 				{
-					DocumentScan document = new DocumentScan(reader.GetInt32("ID_DocumentScan"), reader.GetInt32("ID_ArchiveBooking"), reader.GetString("DocumentPath"));
+					while (reader.Read())
+					{
+						DocumentScan document = new DocumentScan(reader.GetInt32("ID_DocumentScan"), reader.GetInt32("ID_ArchiveBooking"), reader.GetString("DocumentPath"));
 
-					result.Add(document);
+						result.Add(document);
+					}
 				}
-
 				reader.Close();
 				command.Dispose();
 				connection.Close();
-			}
-			catch (SqlException ex)
-			{
-				StringBuilder errorMessages = new StringBuilder();
-				for (int i = 0; i < ex.Errors.Count; i++)
-				{
-					errorMessages.Append("Index #" + i + "\n" +
-						"Message: " + ex.Errors[i].Message + "\n" +
-						"LineNumber: " + ex.Errors[i].LineNumber + "\n" +
-						"Source: " + ex.Errors[i].Source + "\n" +
-						"Procedure: " + ex.Errors[i].Procedure + "\n");
-				}
-				Console.WriteLine(errorMessages.ToString());
 			}
 
 			return result;
@@ -138,146 +108,109 @@ namespace DAL
 
 		public void InsertDocument(DocumentScan document)
 		{
-			try
+			if (document == null)
+				throw new IndexOutOfRangeException("Empty document.");
+
+			using (connection = new SqlConnection(connectionString))
 			{
 				connection.Open();
-				adapter = new SqlDataAdapter();
 
-				string sql = "INSERT INTO DocumentScan(ID_ArchiveBooking, DocumentPath) VALUES(@id, @path)";
-				command = new SqlCommand(sql, connection);
-				command.Parameters.AddWithValue("@id", document.ID_ArchiveBooking);
-				command.Parameters.AddWithValue("@path", document.DocumentPath);
-				adapter.InsertCommand = command;
-				adapter.InsertCommand.ExecuteNonQuery();
-
+				using (adapter = new SqlDataAdapter())
+				{
+					string sql = "INSERT INTO DocumentScan(ID_ArchiveBooking, DocumentPath) VALUES(@id, @path)";
+					command = new SqlCommand(sql, connection);
+					command.Parameters.AddWithValue("@id", document.ID_ArchiveBooking);
+					command.Parameters.AddWithValue("@path", document.DocumentPath);
+					adapter.InsertCommand = command;
+					adapter.InsertCommand.ExecuteNonQuery();
+				}
 				command.Dispose();
 				connection.Close();
-			}
-			catch (SqlException ex)
-			{
-				StringBuilder errorMessages = new StringBuilder();
-				for (int i = 0; i < ex.Errors.Count; i++)
-				{
-					errorMessages.Append("Index #" + i + "\n" +
-						"Message: " + ex.Errors[i].Message + "\n" +
-						"LineNumber: " + ex.Errors[i].LineNumber + "\n" +
-						"Source: " + ex.Errors[i].Source + "\n" +
-						"Procedure: " + ex.Errors[i].Procedure + "\n");
-				}
-				Console.WriteLine(errorMessages.ToString());
 			}
 		}
 
 		public void InsertDocuments(List<DocumentScan> documents)
 		{
-			try
+			if (documents.Count == 0)
+				throw new IndexOutOfRangeException("No documents.");
+
+			foreach (DocumentScan document in documents)
 			{
-				foreach (DocumentScan document in documents)
-				{
-					InsertDocument(document);
-				}
-			}
-			catch (Exception ex)
-			{
-				Console.WriteLine(ex.Message.ToString());
+				InsertDocument(document);
 			}
 		}
 
 		public void DeleteDocumentById(int id)
 		{
-			try
+			if (id == 0)
+				throw new IndexOutOfRangeException("No such document.");
+
+			using (connection = new SqlConnection(connectionString))
 			{
 				connection.Open();
-				adapter = new SqlDataAdapter();
 
-				string sql = "DELETE FROM DocumentScan WHERE ID_DocumentScan = @id";
+				using (adapter = new SqlDataAdapter())
+				{
+					string sql = "DELETE FROM DocumentScan WHERE ID_DocumentScan = @id";
 
-				command = new SqlCommand(sql, connection);
-				command.Parameters.AddWithValue("@id", id);
-				adapter.DeleteCommand = command;
-				adapter.DeleteCommand.ExecuteNonQuery();
-
+					command = new SqlCommand(sql, connection);
+					command.Parameters.AddWithValue("@id", id);
+					adapter.DeleteCommand = command;
+					adapter.DeleteCommand.ExecuteNonQuery();
+				}
 				command.Dispose();
 				connection.Close();
-			}
-			catch (SqlException ex)
-			{
-				StringBuilder errorMessages = new StringBuilder();
-				for (int i = 0; i < ex.Errors.Count; i++)
-				{
-					errorMessages.Append("Index #" + i + "\n" +
-						"Message: " + ex.Errors[i].Message + "\n" +
-						"LineNumber: " + ex.Errors[i].LineNumber + "\n" +
-						"Source: " + ex.Errors[i].Source + "\n" +
-						"Procedure: " + ex.Errors[i].Procedure + "\n");
-				}
-				Console.WriteLine(errorMessages.ToString());
 			}
 		}
 
 		public void DeleteDocumentByArchiveBooking(int id)
 		{
-			try
+			if (id == 0)
+				throw new IndexOutOfRangeException("No such document.");
+
+			using (connection = new SqlConnection(connectionString))
 			{
 				connection.Open();
-				adapter = new SqlDataAdapter();
 
-				string sql = "DELETE FROM DocumentScan WHERE ID_ArchiveBooking = @id";
+				using (adapter = new SqlDataAdapter())
+				{
+					string sql = "DELETE FROM DocumentScan WHERE ID_ArchiveBooking = @id";
 
-				command = new SqlCommand(sql, connection);
-				command.Parameters.AddWithValue("@id", id);
-				adapter.DeleteCommand = command;
-				adapter.DeleteCommand.ExecuteNonQuery();
-
+					command = new SqlCommand(sql, connection);
+					command.Parameters.AddWithValue("@id", id);
+					adapter.DeleteCommand = command;
+					adapter.DeleteCommand.ExecuteNonQuery();
+				}
 				command.Dispose();
 				connection.Close();
-			}
-			catch (SqlException ex)
-			{
-				StringBuilder errorMessages = new StringBuilder();
-				for (int i = 0; i < ex.Errors.Count; i++)
-				{
-					errorMessages.Append("Index #" + i + "\n" +
-						"Message: " + ex.Errors[i].Message + "\n" +
-						"LineNumber: " + ex.Errors[i].LineNumber + "\n" +
-						"Source: " + ex.Errors[i].Source + "\n" +
-						"Procedure: " + ex.Errors[i].Procedure + "\n");
-				}
-				Console.WriteLine(errorMessages.ToString());
 			}
 		}
 
 		public void UpdateDocumentScanByID(int id, DocumentScan document)
 		{
-			try
+			if (id == 0)
+				throw new IndexOutOfRangeException("No such document.");
+
+			if (document == null)
+				throw new IndexOutOfRangeException("Empty document.");
+
+			using (connection = new SqlConnection(connectionString))
 			{
 				connection.Open();
-				adapter = new SqlDataAdapter();
 
-				string sql = "UPDATE DocumentScan SET ID_ArchiveBooking = @archiveId, DocumentPath = @path WHERE ID_DocumentScan = @id";
+				using (adapter = new SqlDataAdapter())
+				{
+					string sql = "UPDATE DocumentScan SET ID_ArchiveBooking = @archiveId, DocumentPath = @path WHERE ID_DocumentScan = @id";
 
-				command = new SqlCommand(sql, connection);
-				command.Parameters.AddWithValue("@archiveId", document.ID_ArchiveBooking);
-				command.Parameters.AddWithValue("@path", document.DocumentPath);
-				command.Parameters.AddWithValue("@id", id);
-				adapter.UpdateCommand = command;
-				adapter.UpdateCommand.ExecuteNonQuery();
-
+					command = new SqlCommand(sql, connection);
+					command.Parameters.AddWithValue("@archiveId", document.ID_ArchiveBooking);
+					command.Parameters.AddWithValue("@path", document.DocumentPath);
+					command.Parameters.AddWithValue("@id", id);
+					adapter.UpdateCommand = command;
+					adapter.UpdateCommand.ExecuteNonQuery();
+				}
 				command.Dispose();
 				connection.Close();
-			}
-			catch (SqlException ex)
-			{
-				StringBuilder errorMessages = new StringBuilder();
-				for (int i = 0; i < ex.Errors.Count; i++)
-				{
-					errorMessages.Append("Index #" + i + "\n" +
-						"Message: " + ex.Errors[i].Message + "\n" +
-						"LineNumber: " + ex.Errors[i].LineNumber + "\n" +
-						"Source: " + ex.Errors[i].Source + "\n" +
-						"Procedure: " + ex.Errors[i].Procedure + "\n");
-				}
-				Console.WriteLine(errorMessages.ToString());
 			}
 		}
 

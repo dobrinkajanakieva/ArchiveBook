@@ -7,11 +7,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArchiveBook", "ArchiveBook\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Models", "Models\Models.csproj", "{D923D6C4-CE84-445F-92A6-50313BF59F04}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DAL", "DAL\DAL.csproj", "{95CB2BBC-B449-42E7-A7E6-23D149A08D86}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DAL_SQLServer", "DAL\DAL_SQLServer.csproj", "{95CB2BBC-B449-42E7-A7E6-23D149A08D86}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{50DD8453-CB92-4606-865A-4E77249D7B34}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DALTests", "DALTests\DALTests.csproj", "{52BA1BD5-EE11-410F-B084-B9FB6C535E3C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DAL_Interfaces", "DAL_Interfaces\DAL_Interfaces.csproj", "{D299B483-DA3E-421B-9912-694272BEEDD4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,6 +37,10 @@ Global
 		{52BA1BD5-EE11-410F-B084-B9FB6C535E3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{52BA1BD5-EE11-410F-B084-B9FB6C535E3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{52BA1BD5-EE11-410F-B084-B9FB6C535E3C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D299B483-DA3E-421B-9912-694272BEEDD4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D299B483-DA3E-421B-9912-694272BEEDD4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D299B483-DA3E-421B-9912-694272BEEDD4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D299B483-DA3E-421B-9912-694272BEEDD4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

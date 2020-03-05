@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Text;
 
-namespace DAL
+namespace DAL_SQLServer
 {
-	public abstract class DBConnection
+	public abstract class DBClass
 	{
-		public DBConnection()  //(string connectionString)
+		public DBClass()  
 		{
-			connection = new SqlConnection(connectionString);
+
 		}
 
 		public string connectionString = "Server=(localdb)\\mssqllocaldb;Database=Archive;Trusted_Connection=True;MultipleActiveResultSets=true";
