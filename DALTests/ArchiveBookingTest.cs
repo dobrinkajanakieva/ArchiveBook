@@ -1,4 +1,4 @@
-﻿using DAL_SQLServer;
+﻿using DAL.SQLServer;
 using Models;
 using System;
 using System.Collections.Generic;
@@ -16,7 +16,7 @@ namespace DALTests
             var archiveBookingEngine = new ArchiveBookingEngine();
 
             //Act
-            ArchiveBooking booking = archiveBookingEngine.GetArchiveBookingByID(83);
+            ArchiveBooking booking = archiveBookingEngine.GetArchiveBookingByID(73);
 
             //Assert
             Assert.Equal(69, booking.ID_ArchiveBooking);

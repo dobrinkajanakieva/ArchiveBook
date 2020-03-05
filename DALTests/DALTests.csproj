@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DAL\DAL_SQLServer.csproj" />
+    <ProjectReference Include="..\DAL\DAL.SQLServer.csproj" />
   </ItemGroup>
 
 </Project>

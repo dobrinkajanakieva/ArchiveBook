@@ -1,11 +1,11 @@
-﻿using DAL_Interfaces;
+﻿using DAL.Interfaces;
 using Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 
-namespace DAL_SQLServer
+namespace DAL.SQLServer
 {
 	public class DocumentScanEngine : DBClass, IDocumentScanEngine
 	{

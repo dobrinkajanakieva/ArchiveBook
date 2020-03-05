@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Text;
 
-namespace DAL_SQLServer
+namespace DAL.SQLServer
 {
 	public abstract class DBClass
 	{
