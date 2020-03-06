@@ -1,11 +1,10 @@
-﻿using DAL.SQLServer;
-using Models;
+﻿using Models;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using Xunit;
 
-namespace DALTests
+namespace DAL.EF.Tests
 {
 	public class DocumentScanTest
 	{
@@ -16,7 +15,7 @@ namespace DALTests
             var documentScanEngine = new DocumentScanEngine();
 
             //Act
-            DocumentScan document = documentScanEngine.GetDocumentByID(28);
+            DocumentScan document = documentScanEngine.GetDocumentByID(17);
 
             //Assert
             Assert.Equal(70, document.ID_ArchiveBooking);
@@ -31,7 +30,7 @@ namespace DALTests
 
             //Act
             List<DocumentScan> documents = documentScanEngine.GetDocumentsByArchiveBooking(69);
-            
+
             //Assert
             foreach (DocumentScan document in documents)
             {
@@ -53,7 +52,7 @@ namespace DALTests
             List<DocumentScan> documents = documentScanEngine.GetDocumentsByArchiveBooking(70);
 
             //Assert
-            foreach(DocumentScan doc in documents)
+            foreach (DocumentScan doc in documents)
                 Assert.Equal(DocumentPath, doc.DocumentPath);
         }
 
@@ -67,8 +66,8 @@ namespace DALTests
 
             //Act
             DocumentScan document = new DocumentScan(100, ID_ArchiveBooking, DocumentPath);
-            documentScanEngine.UpdateDocumentScanByID(36, document);
-            document = documentScanEngine.GetDocumentByID(36);
+            documentScanEngine.UpdateDocumentScanByID(24, document);
+            document = documentScanEngine.GetDocumentByID(24);
 
             //Assert
             Assert.Equal(DocumentPath, document.DocumentPath);
@@ -96,10 +95,10 @@ namespace DALTests
 
             //Act
             documentScanEngine.DeleteDocumentByArchiveBooking(69);
-            List<DocumentScan> documents = documentScanEngine.GetDocumentsByArchiveBooking(69);
+            DocumentScan document = documentScanEngine.GetDocumentByID(11);
 
             //Assert
-            Assert.Empty(documents);
+            Assert.Null(document.DocumentPath);
         }
 
         [Fact]
@@ -107,11 +106,11 @@ namespace DALTests
         {
             //Arrange
             var documentScanEngine = new DocumentScanEngine();
-            const int ID_ArchiveBooking1 = 84;
-            const string DocumentPath1 = "novo"; 
+            const int ID_ArchiveBooking1 = 72;
+            const string DocumentPath1 = "novo";
             const int ID_ArchiveBooking2 = 70;
-            const string DocumentPath2 = "novo"; 
-            const int ID_ArchiveBooking3 = 98;
+            const string DocumentPath2 = "novo";
+            const int ID_ArchiveBooking3 = 72;
             const string DocumentPath3 = "novo";
             List<DocumentScan> documents = new List<DocumentScan>();
             List<DocumentScan> result = new List<DocumentScan>();

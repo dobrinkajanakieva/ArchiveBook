@@ -1,16 +1,15 @@
-﻿using DAL.SQLServer;
-using Models;
+﻿using Models;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using Xunit;
 
-namespace DALTests
+namespace DAL.EF.Tests
 {
 	public class SenderTest
 	{
         [Fact]
-        public void GetSenderByID() 
+        public void GetSenderByID()
         {
             //Arrange
             var senderEngine = new SenderEngine();
@@ -25,7 +24,7 @@ namespace DALTests
         }
 
         [Fact]
-        public void GetSenderByName() 
+        public void GetSenderByName()
         {
             //Arrange
             var senderEngine = new SenderEngine();
@@ -40,7 +39,7 @@ namespace DALTests
         }
 
         [Fact]
-        public void InsertSender() 
+        public void InsertSender()
         {
             //Arrange
             var senderEngine = new SenderEngine();
@@ -56,7 +55,7 @@ namespace DALTests
         }
 
         [Fact]
-        public void UpdateSenderByName() 
+        public void UpdateSenderByName()
         {
             //Arrange
             var senderEngine = new SenderEngine();
@@ -74,7 +73,7 @@ namespace DALTests
         }
 
         [Fact]
-        public void DeleteSenderByName() 
+        public void DeleteSenderByName()
         {
             //Arrange
             var senderEngine = new SenderEngine();
@@ -119,7 +118,7 @@ namespace DALTests
             result.Add(senderEngine.GetSenderByName(Name2));
             result.Add(senderEngine.GetSenderByName(Name3));
 
-            
+
 
             senderEngine.DeleteSendersByNames(names);
 
@@ -146,11 +145,11 @@ namespace DALTests
             names.Add(Name2);
             names.Add(Name3);
 
-            senderEngine.DeleteSendersByNames(names);
-
             result.Add(senderEngine.GetSenderByName(Name1));
             result.Add(senderEngine.GetSenderByName(Name2));
             result.Add(senderEngine.GetSenderByName(Name3));
+
+            senderEngine.DeleteSendersByNames(names);
 
             //Assert
             foreach (Sender sender in result)

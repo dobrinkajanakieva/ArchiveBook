@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using Xunit;
 
-namespace DALTests
+namespace DAL.SQLServerTests
 {
 	public class ArchiveCodeTest
 	{
@@ -68,7 +68,7 @@ namespace DALTests
 
             //Act
             ArchiveCode code = new ArchiveCode(100, Code, Name);
-            archiveCodeEngine.UpdateArchiveCodeByCode("09", code);
+            archiveCodeEngine.UpdateArchiveCodeByCode("456", code);
             code = archiveCodeEngine.GetArchiveCodeByCode(Code);
 
             //Assert

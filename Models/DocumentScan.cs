@@ -15,7 +15,7 @@ namespace Models
             DocumentPath = documentPath;
         }
 
-        public int ID_DocumentScan { get; set; }
+        public int? ID_DocumentScan { get; set; }
         public int ID_ArchiveBooking { get; set; }
         public string DocumentPath { get; set; }
     }

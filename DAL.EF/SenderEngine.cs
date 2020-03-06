@@ -9,9 +9,9 @@ namespace DAL.EF
 {
 	public class SenderEngine : ISenderEngine
 	{
-		public SenderEngine(ArchiveBookContext context)
+		public SenderEngine()
 		{
-			this.context = context;
+			this.context = new ArchiveBookContext();
 		}
 
 		public List<Sender> GetSenders()
@@ -22,7 +22,7 @@ namespace DAL.EF
 		public Sender GetSenderByID(int id)
 		{
 			if (id == 0)
-				throw new IndexOutOfRangeException("No such sender.");
+				throw new IndexOutOfRangeException("Invalid id.");
 
 			return context.Senders.Where(s => s.ID_Sender == id).FirstOrDefault();
 		}
@@ -30,7 +30,7 @@ namespace DAL.EF
 		public Sender GetSenderByName(string name)
 		{
 			if (name == null)
-				throw new IndexOutOfRangeException("No such sender.");
+				throw new IndexOutOfRangeException("Invalid name.");
 
 			return context.Senders.Where(s => s.SenderName == name).FirstOrDefault();
 		}
@@ -39,6 +39,8 @@ namespace DAL.EF
 		{
 			if (sender == null)
 				throw new IndexOutOfRangeException("Empty sender.");
+
+			sender.ID_Sender = null;
 
 			context.Senders.Add(sender);
 			context.SaveChanges();
@@ -49,6 +51,9 @@ namespace DAL.EF
 			if (senders.Count == 0)
 				throw new IndexOutOfRangeException("No senders.");
 
+			foreach (Sender sender in senders)
+				sender.ID_Sender = null;
+
 			context.Senders.AddRange(senders);
 			context.SaveChanges();
 		}
@@ -56,9 +61,12 @@ namespace DAL.EF
 		public void DeleteSenderById(int id)
 		{
 			if (id == 0)
-				throw new IndexOutOfRangeException("No such sender.");
+				throw new IndexOutOfRangeException("Invalid id.");
 
 			Sender sender = context.Senders.Where(s => s.ID_Sender == id).FirstOrDefault();
+			if (sender == null)
+				//throw new ArgumentNullException("No sender with that id in db.");
+				return;
 			context.Senders.Remove(sender);
 			context.SaveChanges();
 		}
@@ -66,9 +74,12 @@ namespace DAL.EF
 		public void DeleteSenderByName(string name)
 		{
 			if (name == null)
-				throw new IndexOutOfRangeException("No such sender.");
+				throw new IndexOutOfRangeException("Invalid name.");
 
 			Sender sender = context.Senders.Where(s => s.SenderName == name).FirstOrDefault();
+			if (sender == null)
+				//throw new ArgumentNullException("No sender with that name in db.");
+				return;
 			context.Senders.Remove(sender);
 			context.SaveChanges();
 		}
@@ -79,6 +90,9 @@ namespace DAL.EF
 				throw new IndexOutOfRangeException("No senders.");
 
 			List<Sender> s = context.Senders.Where(s => names.Contains(s.SenderName)).ToList();
+			if (s == null)
+				//throw new ArgumentNullException("No senders with those names in db.");
+				return;
 			context.Senders.RemoveRange(s);
 			context.SaveChanges();
 		}
@@ -86,12 +100,15 @@ namespace DAL.EF
 		public void UpdateSenderById(int id, Sender sender)
 		{
 			if (id == 0)
-				throw new IndexOutOfRangeException("No such sender.");
+				throw new IndexOutOfRangeException("Invalid id.");
 
 			if (sender == null)
 				throw new IndexOutOfRangeException("Empty sender.");
 
 			Sender oldSender = context.Senders.Where(s => s.ID_Sender == id).FirstOrDefault();
+			if (oldSender == null)
+				//throw new ArgumentNullException("No sender with that name in db.");
+				return;
 			oldSender.SenderName = sender.SenderName;
 			context.Senders.Update(oldSender);
 			context.SaveChanges();
@@ -100,14 +117,17 @@ namespace DAL.EF
 		public void UpdateSenderByName(string name, Sender sender)
 		{
 			if (name == null)
-				throw new IndexOutOfRangeException("No such sender.");
+				throw new IndexOutOfRangeException("Invalid name.");
 
 			if (sender == null)
 				throw new IndexOutOfRangeException("Empty sender.");
 
 			Sender oldSender = context.Senders.Where(s => s.SenderName == name).FirstOrDefault();
+			if (oldSender == null)
+				//throw new ArgumentNullException("No sender with that name in db.");
+				return;
 			oldSender.SenderName = sender.SenderName;
-			context.Senders.Remove(oldSender);
+			context.Senders.Update(oldSender);
 			context.SaveChanges();
 		}
 

@@ -63,8 +63,9 @@ namespace DAL.SQLServer
 			{
 				connection.Open();
 
-				string sql = "SELECT * FROM ArchiveBooking WHERE ID_ArchiveBooking=" + id;
+				string sql = "SELECT * FROM ArchiveBooking WHERE ID_ArchiveBooking=@id";
 				command = new SqlCommand(sql, connection);
+				command.Parameters.AddWithValue("@id", id);
 
 				using (reader = command.ExecuteReader())
 				{
@@ -99,8 +100,9 @@ namespace DAL.SQLServer
 			{
 				connection.Open();
 
-				string sql = "SELECT * FROM ArchiveBooking WHERE DocumentNumber='" + number + "'";
+				string sql = "SELECT * FROM ArchiveBooking WHERE DocumentNumber=@number";
 				command = new SqlCommand(sql, connection);
+				command.Parameters.AddWithValue("@number", number);
 
 				using (reader = command.ExecuteReader())
 				{
@@ -135,9 +137,9 @@ namespace DAL.SQLServer
 			{
 				connection.Open();
 
-				string sql = "SELECT * FROM ArchiveBooking WHERE EntryCode = @parameter";
+				string sql = "SELECT * FROM ArchiveBooking WHERE EntryCode = @entryCode";
 				command = new SqlCommand(sql, connection);
-				command.Parameters.AddWithValue("@parameter", entryCode);
+				command.Parameters.AddWithValue("@entryCode", entryCode);
 
 				using (reader = command.ExecuteReader())
 				{
@@ -172,8 +174,9 @@ namespace DAL.SQLServer
 			{
 				connection.Open();
 
-				string sql = "SELECT * FROM ArchiveBooking WHERE Date='" + date.Date + "'";
+				string sql = "SELECT * FROM ArchiveBooking WHERE Date=@date";
 				command = new SqlCommand(sql, connection);
+				command.Parameters.AddWithValue("@date", date);
 
 				using (reader = command.ExecuteReader())
 				{
@@ -212,8 +215,9 @@ namespace DAL.SQLServer
 			{
 				connection.Open();
 
-				string sql = "SELECT * FROM ArchiveBooking WHERE Year=" + year;
+				string sql = "SELECT * FROM ArchiveBooking WHERE Year=@year";
 				command = new SqlCommand(sql, connection);
+				command.Parameters.AddWithValue("@year", year);
 
 				using (reader = command.ExecuteReader())
 				{
@@ -252,8 +256,9 @@ namespace DAL.SQLServer
 			{
 				connection.Open();
 
-				string sql = "SELECT * FROM ArchiveBooking WHERE Subject='" + subject + "'";
+				string sql = "SELECT * FROM ArchiveBooking WHERE Subject=@subject";
 				command = new SqlCommand(sql, connection);
+				command.Parameters.AddWithValue("@subject", subject);
 
 				using (reader = command.ExecuteReader())
 				{
@@ -292,9 +297,10 @@ namespace DAL.SQLServer
 			{
 				connection.Open();
 
-				string sql = "SELECT ID_ArchiveCode FROM ArchiveCode WHERE Code='" + code + "'";
+				string sql = "SELECT ID_ArchiveCode FROM ArchiveCode WHERE Code=@code";
 				int id = 0;
 				command = new SqlCommand(sql, connection);
+				command.Parameters.AddWithValue("@code", code);
 
 				using (reader = command.ExecuteReader())
 				{
@@ -302,8 +308,10 @@ namespace DAL.SQLServer
 						id = reader.GetInt32(0);
 				}
 
-				sql = "SELECT * FROM ArchiveBooking WHERE ID_ArchiveCode=" + id;
+				sql = "SELECT * FROM ArchiveBooking WHERE ID_ArchiveCode=@id";
 				command = new SqlCommand(sql, connection);
+				command.Parameters.AddWithValue("@id", id);
+
 				using (reader = command.ExecuteReader())
 				{
 					while (reader.Read())
@@ -341,9 +349,10 @@ namespace DAL.SQLServer
 			{
 				connection.Open();
 
-				string sql = "SELECT ID_Sender FROM Sender WHERE SenderName='" + sender + "'";
+				string sql = "SELECT ID_Sender FROM Sender WHERE SenderName=@sender";
 				int id = 0;
 				command = new SqlCommand(sql, connection);
+				command.Parameters.AddWithValue("@sender", sender);
 
 				using (reader = command.ExecuteReader())
 				{
@@ -351,8 +360,9 @@ namespace DAL.SQLServer
 						id = reader.GetInt32(0);
 				}
 
-				sql = "SELECT * FROM ArchiveBooking WHERE ID_Sender=" + id;
+				sql = "SELECT * FROM ArchiveBooking WHERE ID_Sender=@id";
 				command = new SqlCommand(sql, connection);
+				command.Parameters.AddWithValue("@id", id);
 
 				using (reader = command.ExecuteReader())
 				{
@@ -431,9 +441,10 @@ namespace DAL.SQLServer
 
 				using (adapter = new SqlDataAdapter())
 				{
-					string sql = "DELETE FROM ArchiveBooking WHERE ID_ArchiveBooking=" + id;
+					string sql = "DELETE FROM ArchiveBooking WHERE ID_ArchiveBooking=@id";
 
 					command = new SqlCommand(sql, connection);
+					command.Parameters.AddWithValue("@id", id);
 					adapter.DeleteCommand = command;
 					adapter.DeleteCommand.ExecuteNonQuery();
 				}
@@ -453,9 +464,10 @@ namespace DAL.SQLServer
 
 				using (adapter = new SqlDataAdapter())
 				{
-					string sql = "DELETE FROM ArchiveBooking WHERE ID_ArchiveCode=" + id;
+					string sql = "DELETE FROM ArchiveBooking WHERE ID_ArchiveCode=@id";
 
 					command = new SqlCommand(sql, connection);
+					command.Parameters.AddWithValue("@id", id);
 					adapter.DeleteCommand = command;
 					adapter.DeleteCommand.ExecuteNonQuery();
 				}
@@ -475,9 +487,10 @@ namespace DAL.SQLServer
 
 				using (adapter = new SqlDataAdapter())
 				{
-					string sql = "DELETE FROM ArchiveBooking WHERE ID_Sender=" + id;
+					string sql = "DELETE FROM ArchiveBooking WHERE ID_Sender=@id";
 
 					command = new SqlCommand(sql, connection);
+					command.Parameters.AddWithValue("@id", id);
 					adapter.DeleteCommand = command;
 					adapter.DeleteCommand.ExecuteNonQuery();
 				}
@@ -509,7 +522,7 @@ namespace DAL.SQLServer
 			}
 		}
 
-		public void DeleteArchiveBookingsByDocumentNumber(string number)
+		public void DeleteArchiveBookingByDocumentNumber(string number)
 		{
 			if (number == null)
 				throw new IndexOutOfRangeException("No booking.");
@@ -520,9 +533,10 @@ namespace DAL.SQLServer
 
 				using (adapter = new SqlDataAdapter())
 				{
-					string sql = "DELETE FROM ArchiveBooking WHERE DocumentNumber='" + number + "'";
+					string sql = "DELETE FROM ArchiveBooking WHERE DocumentNumber=@number";
 
 					command = new SqlCommand(sql, connection);
+					command.Parameters.AddWithValue("@number", number);
 					adapter.DeleteCommand = command;
 					adapter.DeleteCommand.ExecuteNonQuery();
 				}
@@ -542,9 +556,10 @@ namespace DAL.SQLServer
 
 				using (adapter = new SqlDataAdapter())
 				{
-					string sql = "DELETE FROM ArchiveBooking WHERE Date='" + date.Date + "'";
+					string sql = "DELETE FROM ArchiveBooking WHERE Date=@date";
 
 					command = new SqlCommand(sql, connection);
+					command.Parameters.AddWithValue("@date", date);
 					adapter.DeleteCommand = command;
 					adapter.DeleteCommand.ExecuteNonQuery();
 				}
@@ -564,9 +579,10 @@ namespace DAL.SQLServer
 
 				using (adapter = new SqlDataAdapter())
 				{
-					string sql = "DELETE FROM ArchiveBooking WHERE Subject='" + subject + "'";
+					string sql = "DELETE FROM ArchiveBooking WHERE Subject=@subject";
 
 					command = new SqlCommand(sql, connection);
+					command.Parameters.AddWithValue("@subject", subject);
 					adapter.DeleteCommand = command;
 					adapter.DeleteCommand.ExecuteNonQuery();
 				}
@@ -586,9 +602,10 @@ namespace DAL.SQLServer
 
 				using (adapter = new SqlDataAdapter())
 				{
-					string sql = "DELETE FROM ArchiveBooking WHERE EntryCode='" + entryCode + "'";
+					string sql = "DELETE FROM ArchiveBooking WHERE EntryCode=@entryCode";
 
 					command = new SqlCommand(sql, connection);
+					command.Parameters.AddWithValue("@entryCode", entryCode);
 					adapter.DeleteCommand = command;
 					adapter.DeleteCommand.ExecuteNonQuery();
 				}

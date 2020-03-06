@@ -14,7 +14,7 @@ namespace Models
             Name = name;
         }
 
-        public int ID_ArchiveCode { get; set; }
+        public int? ID_ArchiveCode { get; set; }
         public string Code { get; set; }
         public string Name { get; set; }
     }

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using Xunit;
 
-namespace DALTests
+namespace DAL.SQLServerTests
 {
 	public class ArchiveBookingTest
 	{
@@ -19,14 +19,14 @@ namespace DALTests
             ArchiveBooking booking = archiveBookingEngine.GetArchiveBookingByID(73);
 
             //Assert
-            Assert.Equal(73, booking.ID_ArchiveBooking);
-            Assert.Equal(22, booking.ID_ArchiveCode);
-            Assert.Equal("02", booking.DocumentNumber);
-            Assert.Equal(new DateTime(2020,03,03), booking.Date);
+            Assert.Equal(69, booking.ID_ArchiveBooking);
+            Assert.Equal(24, booking.ID_ArchiveCode);
+            Assert.Equal("05", booking.DocumentNumber);
+            Assert.Equal(new DateTime(2020,05,03), booking.Date);
             Assert.Equal(20, booking.Year);
-            Assert.Equal("grdfdger", booking.Subject);
+            Assert.Equal("grsgr", booking.Subject);
             Assert.Equal(2, booking.ID_Sender);
-            Assert.Equal("04-02/20", booking.EntryCode);
+            Assert.Equal("04-03/20", booking.EntryCode);
         }
 
         [Fact]
@@ -36,17 +36,17 @@ namespace DALTests
             var archiveBookingEngine = new ArchiveBookingEngine();
 
             //Act
-            ArchiveBooking booking = archiveBookingEngine.GetArchiveBookingByDocumentNumber("02");
+            ArchiveBooking booking = archiveBookingEngine.GetArchiveBookingByDocumentNumber("05");
 
             //Assert
-            Assert.Equal(122, booking.ID_ArchiveBooking);
-            Assert.Equal(22, booking.ID_ArchiveCode);
-            Assert.Equal("02", booking.DocumentNumber);
-            Assert.Equal(new DateTime(2020, 03, 03), booking.Date);
+            Assert.Equal(69, booking.ID_ArchiveBooking);
+            Assert.Equal(24, booking.ID_ArchiveCode);
+            Assert.Equal("05", booking.DocumentNumber);
+            Assert.Equal(new DateTime(2020, 05, 03), booking.Date);
             Assert.Equal(20, booking.Year);
-            Assert.Equal("ghjkfl", booking.Subject);
+            Assert.Equal("grsgr", booking.Subject);
             Assert.Equal(2, booking.ID_Sender);
-            Assert.Equal("04-02/20", booking.EntryCode);
+            Assert.Equal("04-03/20", booking.EntryCode);
         }
 
         [Fact]
@@ -56,17 +56,17 @@ namespace DALTests
             var archiveBookingEngine = new ArchiveBookingEngine();
 
             //Act
-            ArchiveBooking booking = archiveBookingEngine.GetArchiveBookingByEntryCode("04-02/20");
+            ArchiveBooking booking = archiveBookingEngine.GetArchiveBookingByEntryCode("04-03/20");
 
             //Assert
-            Assert.Equal(122, booking.ID_ArchiveBooking);
-            Assert.Equal(22, booking.ID_ArchiveCode);
-            Assert.Equal("02", booking.DocumentNumber);
-            Assert.Equal(new DateTime(2020, 03, 03), booking.Date);
+            Assert.Equal(69, booking.ID_ArchiveBooking);
+            Assert.Equal(24, booking.ID_ArchiveCode);
+            Assert.Equal("05", booking.DocumentNumber);
+            Assert.Equal(new DateTime(2020, 05, 03), booking.Date);
             Assert.Equal(20, booking.Year);
-            Assert.Equal("ghjkfl", booking.Subject);
+            Assert.Equal("grsgr", booking.Subject);
             Assert.Equal(2, booking.ID_Sender);
-            Assert.Equal("04-02/20", booking.EntryCode);
+            Assert.Equal("04-03/20", booking.EntryCode);
         }
 
         [Fact]
@@ -264,7 +264,10 @@ namespace DALTests
             bookings = archiveBookingEngine.GetArchiveBookingsByArchiveCode("0101");
 
             //Assert
-            Assert.Empty(bookings);
+            foreach(ArchiveBooking booking in bookings)
+            {
+                Assert.Null(booking.DocumentNumber);
+            }
         }
 
         [Fact]
@@ -292,10 +295,10 @@ namespace DALTests
             //Act
             archiveBookingEngine.DeleteArchiveBookingsBySenderID(2);
             booking = null;
-            List<ArchiveBooking> bookings = archiveBookingEngine.GetArchiveBookingsBySender("gfdshgt");
+            booking = archiveBookingEngine.GetArchiveBookingByDocumentNumber("05");
 
             //Assert
-            Assert.Empty(bookings);
+            Assert.Null(booking.DocumentNumber);
         }
 
         [Fact]
@@ -308,14 +311,14 @@ namespace DALTests
             //Act
             archiveBookingEngine.DeleteArchiveBookingsByYear(22);
             booking = null;
-            List<ArchiveBooking> bookings = archiveBookingEngine.GetArchiveBookingsByYear(22);
+            booking = archiveBookingEngine.GetArchiveBookingByDocumentNumber("08");
 
             //Assert
-            Assert.Empty(bookings);
+            Assert.Null(booking.DocumentNumber);
         }
 
         [Fact]
-        public void DeleteBookingByDocumentNumber()
+        public void DeleteBookingsByDocumentNumber()
         {
             //Arrange
             var archiveBookingEngine = new ArchiveBookingEngine();
@@ -331,7 +334,7 @@ namespace DALTests
             //Act
             ArchiveBooking booking = new ArchiveBooking(ID, ID_ArchiveCode, DocumentNumber, Date.Date, Year, Subject, ID_Sender, EntryCode);
             archiveBookingEngine.InsertArchiveBooking(booking);
-            archiveBookingEngine.DeleteArchiveBookingByDocumentNumber(DocumentNumber);
+            archiveBookingEngine.DeleteArchiveBookingsByDocumentNumber(DocumentNumber);
             booking = null;
             booking = archiveBookingEngine.GetArchiveBookingByDocumentNumber(DocumentNumber);
 
@@ -361,7 +364,10 @@ namespace DALTests
             bookings = archiveBookingEngine.GetArchiveBookingsByDate(Date);
 
             //Assert
-            Assert.Empty(bookings);
+            foreach(ArchiveBooking b in bookings)
+            {
+                Assert.Null(b.DocumentNumber);
+            }
         }
 
         [Fact]
@@ -374,10 +380,10 @@ namespace DALTests
             //Act
             archiveBookingEngine.DeleteArchiveBookingsBySubject("fhjerk");
             booking = null;
-            List<ArchiveBooking> bookings = archiveBookingEngine.GetArchiveBookingsBySubject("fhjerk");
+            booking = archiveBookingEngine.GetArchiveBookingByDocumentNumber("11");
 
             //Assert
-            Assert.Empty(bookings);
+            Assert.Null(booking.DocumentNumber);
         }
 
         [Fact]

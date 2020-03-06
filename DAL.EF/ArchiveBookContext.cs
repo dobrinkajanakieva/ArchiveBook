@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore.SqlServer;
 using Models;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace DAL.EF
@@ -26,10 +27,10 @@ namespace DAL.EF
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
-			modelBuilder.Entity<ArchiveBooking>().HasKey("ID_ArchiveBooking");
-			modelBuilder.Entity<ArchiveCode>().HasKey("ID_ArchiveCode");
-			modelBuilder.Entity<DocumentScan>().HasKey("ID_DocumentScan");
-			modelBuilder.Entity<Sender>().HasKey("ID_Sender");
+			modelBuilder.Entity<ArchiveBooking>().ToTable("ArchiveBooking").HasKey("ID_ArchiveBooking");
+			modelBuilder.Entity<ArchiveCode>().ToTable("ArchiveCode").HasKey("ID_ArchiveCode");
+			modelBuilder.Entity<DocumentScan>().ToTable("DocumentScan").HasKey("ID_DocumentScan");
+			modelBuilder.Entity<Sender>().ToTable("Sender").HasKey("ID_Sender");
 		}
 
 		public DbSet<ArchiveBooking> ArchiveBookings { get; set; }

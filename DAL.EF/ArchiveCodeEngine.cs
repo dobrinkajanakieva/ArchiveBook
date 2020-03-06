@@ -9,9 +9,9 @@ namespace DAL.EF
 {
 	public class ArchiveCodeEngine : IArchiveCodeEngine
 	{
-		public ArchiveCodeEngine(ArchiveBookContext context)
+		public ArchiveCodeEngine()
 		{
-			this.context = context;
+			this.context = new ArchiveBookContext();
 		}
 
 		public List<ArchiveCode> GetArchiveCodes()
@@ -30,7 +30,7 @@ namespace DAL.EF
 		public ArchiveCode GetArchiveCodeByID(int id)
 		{
 			if (id == 0)
-				throw new IndexOutOfRangeException("No such code.");
+				throw new IndexOutOfRangeException("Invalid id.");
 
 			return context.ArchiveCodes.Where(c => c.ID_ArchiveCode == id).FirstOrDefault();
 		}
@@ -38,7 +38,7 @@ namespace DAL.EF
 		public ArchiveCode GetArchiveCodeByCode(string code)
 		{
 			if (code == null)
-				throw new IndexOutOfRangeException("No such code.");
+				throw new IndexOutOfRangeException("Invalid code.");
 
 			return context.ArchiveCodes.Where(c => c.Code == code).FirstOrDefault();
 		}
@@ -47,6 +47,8 @@ namespace DAL.EF
 		{
 			if (code.ID_ArchiveCode == 0)
 				throw new IndexOutOfRangeException("Empty code.");
+
+			code.ID_ArchiveCode = null;
 
 			context.Add(code);
 			context.SaveChanges();
@@ -57,6 +59,9 @@ namespace DAL.EF
 			if (codes.Count == 0)
 				throw new IndexOutOfRangeException("No codes.");
 
+			foreach (ArchiveCode code in codes)
+				code.ID_ArchiveCode = null;
+
 			context.AddRange(codes);
 			context.SaveChanges();
 		}
@@ -64,9 +69,12 @@ namespace DAL.EF
 		public void DeleteArchiveCodeById(int id)
 		{
 			if (id == 0)
-				throw new IndexOutOfRangeException("No such code.");
+				throw new IndexOutOfRangeException("Invalid id.");
 
 			ArchiveCode code = context.ArchiveCodes.Where(c => c.ID_ArchiveCode == id).FirstOrDefault();
+			if (code == null)
+				//throw new ArgumentNullException("No code with that id in db.");
+				return;
 			context.ArchiveCodes.Remove(code);
 			context.SaveChanges();
 		}
@@ -74,9 +82,12 @@ namespace DAL.EF
 		public void DeleteArchiveCodeByCode(string code)
 		{
 			if (code == null)
-				throw new IndexOutOfRangeException("No such code.");
+				throw new IndexOutOfRangeException("Invalid code.");
 
 			ArchiveCode c = context.ArchiveCodes.Where(c => c.Code == code).FirstOrDefault();
+			if (c == null)
+				//throw new ArgumentNullException("No code with that code in db.");
+				return;
 			context.ArchiveCodes.Remove(c);
 			context.SaveChanges();
 		}
@@ -87,6 +98,9 @@ namespace DAL.EF
 				throw new IndexOutOfRangeException("No codes.");
 
 			List<ArchiveCode> c = context.ArchiveCodes.Where(c => codes.Contains(c.Code)).ToList();
+			if (c == null)
+				//throw new ArgumentNullException("No code with those codes in db.");
+				return;
 			context.ArchiveCodes.RemoveRange(c);
 			context.SaveChanges();
 		}
@@ -94,11 +108,14 @@ namespace DAL.EF
 		public void UpdateArchiveCodeByID(int id, ArchiveCode code)
 		{
 			if (id == 0)
-				throw new IndexOutOfRangeException("No such code.");
+				throw new IndexOutOfRangeException("Invalid id.");
 			if (code == null)
 				throw new IndexOutOfRangeException("No codes.");
 
 			ArchiveCode oldCode = context.ArchiveCodes.Where(c => c.ID_ArchiveCode == id).FirstOrDefault();
+			if (oldCode == null)
+				//throw new ArgumentNullException("No code with that id in db.");
+				return;
 			oldCode.Code = code.Code;
 			oldCode.Name = code.Name;
 			context.ArchiveCodes.Remove(oldCode);
@@ -108,12 +125,15 @@ namespace DAL.EF
 		public void UpdateArchiveCodeByCode(string c, ArchiveCode code)
 		{
 			if (c == null)
-				throw new IndexOutOfRangeException("No such code.");
+				throw new IndexOutOfRangeException("Invalid code.");
 
 			if (code == null)
 				throw new IndexOutOfRangeException("No codes.");
 
 			ArchiveCode oldCode = context.ArchiveCodes.Where(ac => ac.Code == c).FirstOrDefault();
+			if (oldCode == null)
+				//throw new ArgumentNullException("No code with that code in db.");
+				return;
 			oldCode.Code = code.Code;
 			oldCode.Name = code.Name;
 			context.ArchiveCodes.Remove(oldCode);

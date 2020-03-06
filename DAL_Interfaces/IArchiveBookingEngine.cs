@@ -22,7 +22,7 @@ namespace DAL.Interfaces
 		void DeleteArchiveBookingsByArchiveCodeID(int id);
 		void DeleteArchiveBookingsBySenderID(int id);
 		void DeleteArchiveBookingsByYear(int year);
-		void DeleteArchiveBookingsByDocumentNumber(string number);
+		void DeleteArchiveBookingByDocumentNumber(string number);
 		void DeleteArchiveBookingsByDate(DateTime date);
 		void DeleteArchiveBookingsBySubject(string subject);
 		void DeleteArchiveBookingsByEntryCode(string entryCode);

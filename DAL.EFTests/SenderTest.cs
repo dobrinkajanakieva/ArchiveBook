@@ -1,16 +1,16 @@
-﻿using DAL.SQLServer;
+﻿using DAL.EF;
 using Models;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using Xunit;
 
-namespace DALTests
+namespace DAL.EFTests
 {
 	public class SenderTest
 	{
         [Fact]
-        public void GetSenderByID() 
+        public void GetSenderByID()
         {
             //Arrange
             var senderEngine = new SenderEngine();
@@ -25,7 +25,7 @@ namespace DALTests
         }
 
         [Fact]
-        public void GetSenderByName() 
+        public void GetSenderByName()
         {
             //Arrange
             var senderEngine = new SenderEngine();
@@ -40,7 +40,7 @@ namespace DALTests
         }
 
         [Fact]
-        public void InsertSender() 
+        public void InsertSender()
         {
             //Arrange
             var senderEngine = new SenderEngine();
@@ -56,7 +56,7 @@ namespace DALTests
         }
 
         [Fact]
-        public void UpdateSenderByName() 
+        public void UpdateSenderByName()
         {
             //Arrange
             var senderEngine = new SenderEngine();
@@ -70,11 +70,12 @@ namespace DALTests
             sender = senderEngine.GetSenderByName(SenderName);
 
             //Assert
+            Assert.NotNull(sender);
             Assert.Equal(SenderName, sender.SenderName);
         }
 
         [Fact]
-        public void DeleteSenderByName() 
+        public void DeleteSenderByName()
         {
             //Arrange
             var senderEngine = new SenderEngine();
@@ -85,7 +86,7 @@ namespace DALTests
             sender = senderEngine.GetSenderByName("hyt");
 
             //Assert
-            Assert.Null(sender.SenderName);
+            Assert.Null(sender);
         }
 
         [Fact]
@@ -119,10 +120,6 @@ namespace DALTests
             result.Add(senderEngine.GetSenderByName(Name2));
             result.Add(senderEngine.GetSenderByName(Name3));
 
-            
-
-            senderEngine.DeleteSendersByNames(names);
-
             //Assert
             foreach (Sender sender in result)
             {
@@ -136,8 +133,8 @@ namespace DALTests
             //Arrange
             var senderEngine = new SenderEngine();
             const string Name1 = "test9";
-            const string Name2 = "test91";
-            const string Name3 = "test92";
+            const string Name2 = "updated";
+            const string Name3 = "novo";
             List<Sender> result = new List<Sender>();
             List<string> names = new List<string>();
 
@@ -155,7 +152,7 @@ namespace DALTests
             //Assert
             foreach (Sender sender in result)
             {
-                Assert.Null(sender.SenderName);
+                Assert.Null(sender);
             }
         }
     }

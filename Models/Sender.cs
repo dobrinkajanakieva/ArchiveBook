@@ -14,7 +14,7 @@ namespace Models
             SenderName = name;
         }
 
-        public int ID_Sender { get; set; }
+        public int? ID_Sender { get; set; }
         public string SenderName { get; set; }
     }
 }

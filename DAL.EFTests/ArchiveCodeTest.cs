@@ -1,15 +1,16 @@
-﻿using DAL.SQLServer;
+﻿using DAL.EF;
 using Models;
 using System;
 using System.Collections.Generic;
+using System.Text;
 using Xunit;
 
-namespace DALTests
+namespace DAL.EFTests
 {
 	public class ArchiveCodeTest
 	{
-		[Fact]
-		public void GetArchiveCodeByID() 
+        [Fact]
+        public void GetArchiveCodeByID()
         {
             //Arrange
             var archiveCodeEngine = new ArchiveCodeEngine();
@@ -25,7 +26,7 @@ namespace DALTests
         }
 
         [Fact]
-        public void GetArchiveCodeByCode() 
+        public void GetArchiveCodeByCode()
         {
             //Arrange
             var archiveCodeEngine = new ArchiveCodeEngine();
@@ -41,7 +42,7 @@ namespace DALTests
         }
 
         [Fact]
-        public void InsertArchiveCode() 
+        public void InsertArchiveCode()
         {
             //Arrange
             var archiveCodeEngine = new ArchiveCodeEngine();
@@ -59,7 +60,7 @@ namespace DALTests
         }
 
         [Fact]
-        public void UpdateArchiveCodeByCode() 
+        public void UpdateArchiveCodeByCode()
         {
             //Arrange
             var archiveCodeEngine = new ArchiveCodeEngine();
@@ -68,16 +69,15 @@ namespace DALTests
 
             //Act
             ArchiveCode code = new ArchiveCode(100, Code, Name);
-            archiveCodeEngine.UpdateArchiveCodeByCode("09", code);
+            archiveCodeEngine.UpdateArchiveCodeByCode("456", code);
             code = archiveCodeEngine.GetArchiveCodeByCode(Code);
 
             //Assert
-            Assert.Equal(Code, code.Code);
-            Assert.Equal(Name, code.Name);
+            Assert.Null(code);
         }
 
         [Fact]
-        public void DeleteArchiveCodeByCode() 
+        public void DeleteArchiveCodeByCode()
         {
             //Arrange
             var archiveCodeEngine = new ArchiveCodeEngine();
@@ -88,12 +88,12 @@ namespace DALTests
             ArchiveCode code = archiveCodeEngine.GetArchiveCodeByCode(Code);
 
             //Assert
-            Assert.Null(code.Code);
-            Assert.Null(code.Name);
+            Assert.Null(code);
+            Assert.Null(code);
         }
 
         [Fact]
-        public void InsertArchiveCodes() 
+        public void InsertArchiveCodes()
         {
             //Arrange
             var archiveCodeEngine = new ArchiveCodeEngine();
@@ -156,7 +156,7 @@ namespace DALTests
             //Assert
             foreach (ArchiveCode code in result)
             {
-                Assert.Null(code.Code);
+                Assert.Null(code);
             }
         }
     }

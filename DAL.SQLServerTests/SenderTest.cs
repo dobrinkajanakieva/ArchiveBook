@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using Xunit;
 
-namespace DALTests
+namespace DAL.SQLServerTests
 {
 	public class SenderTest
 	{
@@ -146,11 +146,11 @@ namespace DALTests
             names.Add(Name2);
             names.Add(Name3);
 
-            senderEngine.DeleteSendersByNames(names);
-
             result.Add(senderEngine.GetSenderByName(Name1));
             result.Add(senderEngine.GetSenderByName(Name2));
             result.Add(senderEngine.GetSenderByName(Name3));
+
+            senderEngine.DeleteSendersByNames(names);
 
             //Assert
             foreach (Sender sender in result)
