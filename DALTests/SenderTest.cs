@@ -7,6 +7,7 @@ using Xunit;
 
 namespace DALTests
 {
+	//comment
 	public class SenderTest
 	{
         [Fact]
